@@ -1,0 +1,205 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: theme(colors.vela-coal);
+  color: theme(colors.vela-offwhite);
+  font-size: 18px;
+}
+
+.__custom-header-radial-gradient {
+  background: radial-gradient(
+    circle at 50% -200%,
+    theme(colors.vela-coal-light) -7%,
+    transparent 50%
+  );
+}
+
+.__custom-header-border-effect {
+  border-top-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+  border-bottom: 2px solid;
+
+  border-image-slice: 1;
+
+  border-image-source: linear-gradient(
+    to right,
+    theme(colors.vela-lavender) 55%,
+    transparent 55%,
+    transparent 58%,
+    theme(colors.vela-lavender) 58%,
+    theme(colors.vela-lavender) 69%,
+    transparent 69%,
+    transparent 75%,
+    theme(colors.vela-cyan) 75%,
+    theme(colors.vela-cyan) 76%,
+    transparent 76%
+  );
+}
+
+@layer base {
+  a:not([class]) {
+    @apply text-vela-cyan;
+  }
+  a:hover:not([class]) {
+    @apply underline;
+  }
+
+  /* --- logs table special css --- */
+
+  /* --- flowlines --- */
+  .__flowline {
+    background: linear-gradient(
+      90deg,
+      transparent calc(2.25em - 1px),
+      theme(colors.vela-gray) 2.25em,
+      transparent calc(2.25em + 1px)
+    );
+  }
+
+  /* --- breadcrumbs --- */
+  .__breadcrumbs li:last-child:before,
+  .__breadcrumbs li:last-child:after {
+    width: 1rem;
+    background: theme(colors.vela-lavender);
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    -webkit-transform: skew(-15deg);
+    transform: skew(-15deg);
+  }
+  .__breadcrumbs li:last-child:before {
+    left: -0.5rem;
+  }
+  .__breadcrumbs li:last-child:after {
+    right: -0.5rem;
+  }
+
+  /* --- build animation --- */
+  .build-animation {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    position: absolute;
+    overflow-x: clip;
+  }
+  .-running-start {
+    stroke: none;
+  }
+  .-running-particles {
+    stroke: theme(colors.vela-yellow);
+  }
+  .build-animation.-bottom {
+    bottom: -2px;
+  }
+  .build-animation.-top {
+    top: -2px;
+  }
+  .build-animation.-bottom.-running {
+    animation: 26s linear 26s infinite build-status-parallax-running,
+      26s linear build-status-parallax-start;
+  }
+  .build-animation.-top.-running {
+    animation: 22s linear 22s infinite build-status-parallax-running,
+      22s linear build-status-parallax-start;
+  }
+  .build-animation.-bottom.-start {
+    animation: 26s linear build-status-parallax-start;
+  }
+  .build-animation.-top.-start {
+    animation: 22s linear build-status-parallax-start;
+  }
+  .build-animation.-top.-cover {
+    width: 12vw;
+
+    animation: 5s ease-in-out infinite alternate build-particles-source;
+  }
+  .build-animation.-bottom.-cover {
+    width: 16vw;
+
+    animation: 5s ease-in-out infinite alternate-reverse build-particles-source;
+  }
+  .build-animation.-running.-frame-0 {
+    left: 0;
+  }
+  .build-animation.-running.-frame-1 {
+    left: -100%;
+  }
+  .build-animation.-running.-frame-2 {
+    left: -200%;
+  }
+  .-animation-dashes-1 {
+    stroke-dasharray: 20 220 5 360;
+  }
+  .-animation-dashes-2 {
+    stroke-dasharray: 70 270 8 300;
+  }
+  .-animation-dashes-3 {
+    stroke-dasharray: 1 240 8 220 12 400 10 180;
+  }
+
+  @keyframes build-particles-source {
+    0% {
+      -webkit-transform: scaleX(1);
+      transform: scaleX(1);
+    }
+    to {
+      -webkit-transform: scaleX(1.33);
+      transform: scaleX(1.33);
+    }
+  }
+  @keyframes build-status-parallax-running {
+    0% {
+      -webkit-transform: translate(100%);
+      transform: translate(100%);
+    }
+    to {
+      -webkit-transform: translate(200%);
+      transform: translate(200%);
+    }
+  }
+  @keyframes build-status-parallax-start {
+    0% {
+      -webkit-transform: translate(0%);
+      transform: translate(0%);
+    }
+    to {
+      -webkit-transform: translate(100%);
+      transform: translate(100%);
+    }
+  }
+
+  /* --- --- */
+}
+
+@layer utilities {
+  .__vela-scrollbar::-webkit-scrollbar-thumb {
+    background-color: theme(colors.vela-coal-light);
+    border: 2px solid theme(colors.vela-coal-dark);
+    border-radius: 1rem;
+  }
+  .__vela-scrollbar::-webkit-scrollbar {
+    width: 0.7rem;
+  }
+  .__vela-scrollbar::-webkit-resizer {
+    background-color: theme(colors.vela-coal-dark);
+    border: 2px solid theme(colors.vela-coal-dark);
+    border-right: 3px solid theme(colors.vela-coal-light);
+    border-bottom: 3px solid theme(colors.vela-coal-light);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-block w-auto max-w-full cursor-pointer select-none whitespace-nowrap border-2 border-transparent bg-vela-cyan px-[1rem] py-[0.2rem] text-center font-bold leading-6 text-vela-coal no-underline hover:border-vela-cyan hover:bg-vela-coal hover:text-vela-offwhite focus:border-vela-cyan focus:bg-vela-coal focus:text-vela-offwhite sm:px-[1.2rem] sm:py-[0.4rem];
+  }
+  .btn-secondary {
+    @apply inline-block w-auto max-w-full cursor-pointer select-none whitespace-nowrap border-2 border-vela-cyan bg-vela-coal px-[1rem] py-[0.2rem] text-center font-bold leading-6 text-vela-cyan no-underline hover:border-vela-cyan hover:bg-vela-cyan hover:text-vela-coal focus:border-vela-cyan focus:bg-vela-cyan focus:text-vela-coal sm:px-[1.2rem] sm:py-[0.4rem];
+  }
+  .btn-success {
+    @apply border-vela-green text-vela-green;
+  }
+}

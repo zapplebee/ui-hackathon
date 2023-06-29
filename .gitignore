@@ -5,3 +5,4 @@ yarn-error.log
 
 dev/.env
 .env.local
+zscripts

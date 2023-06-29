@@ -16,14 +16,14 @@ export default defineConfig({
             target: useProxy,
             changeOrigin: true,
           },
-          // "/login": {
-          //   target: useProxy,
-          //   changeOrigin: true,
-          // },
-          // "/authenticate": {
-          //   target: useProxy,
-          //   changeOrigin: true,
-          // },
+          "/login": {
+            target: useProxy,
+            changeOrigin: true,
+          },
+          "/authenticate": {
+            target: useProxy,
+            changeOrigin: true,
+          },
         }
       : {},
   },

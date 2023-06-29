@@ -30,7 +30,7 @@ services:
       SECRET_VAULT_ADDR: "http://vault:8200"
       SECRET_VAULT_TOKEN: vela
       VELA_ADDR: "http://localhost:8080"
-      VELA_WEBUI_ADDR: "http://localhost:8888"
+      VELA_WEBUI_ADDR: "http://localhost:8080"
       VELA_LOG_LEVEL: trace
       VELA_SECRET: "zB7mrKDTZqNeNTD8z47yG4DHywspAh"
       VELA_SERVER_PRIVATE_KEY: "F534FF2A080E45F38E05DC70752E6787"
@@ -44,7 +44,7 @@ services:
       - .env
     restart: always
     ports:
-      - "8080:8080"
+      - "8088:8080"
     depends_on:
       - postgres
       - redis

@@ -9,6 +9,10 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { SecretsService } from "../api";
 import { IconGear } from "./IconGear";
 import { SecretPost } from "../api/models/Secret";
+import { useMutation } from "@tanstack/react-query";
+import { Loader } from "./Loader";
+import { useToast } from "./Toast";
+import { Link } from "react-router-dom";
 
 export interface RepoSecretsAddWidgetProps {
   org: string;
@@ -27,6 +31,25 @@ function Reverse({ children }: any) {
   );
 }
 
+function SaveButton({ isLoading }: any) {
+  if (isLoading) {
+    return (
+      <button
+        type="submit"
+        className="btn-primary opacity-30 flex align-middle justify-center"
+        disabled
+      >
+        <Loader />
+      </button>
+    );
+  }
+  return (
+    <button type="submit" className="btn-primary">
+      Save
+    </button>
+  );
+}
+
 export function RepoSecretsAddWidget({ org, repo }: RepoSecretsAddWidgetProps) {
   const { register, handleSubmit, control } = useForm<any>();
 
@@ -35,25 +58,54 @@ export function RepoSecretsAddWidget({ org, repo }: RepoSecretsAddWidgetProps) {
     name: "_allowedImages", // unique name for your Field Array
   });
 
-  const onSubmit: SubmitHandler<any> = (data) => {
-    // todo: data massaging
-    console.log("repo secrets add widget payload", JSON.stringify(data));
+  const SuccessToast = useToast();
+  const FailedToast = useToast();
 
-    const createSecretBody: SecretPost = {
-      org,
-      repo,
-      type: "repo",
-      team: null,
-      events: data.events,
-      allow_command: data.allowCommands === "true",
-      name: data.secretName,
-      value: data.secretValue,
-      images: data.__allowedImages,
-    };
-    // todo: trigger react query mutation with Velakit
-    SecretsService.createSecret("native", "repo", org, repo, createSecretBody);
+  const addSecretMutation = useMutation({
+    mutationFn: (data: any) => {
+      console.log("repo secrets add widget payload", JSON.stringify(data));
+
+      const createSecretBody: SecretPost = {
+        org,
+        repo,
+        type: "repo",
+        team: null,
+        events: data.events,
+        allow_command: data.allowCommands === "true",
+        name: data.secretName,
+        value: data.secretValue,
+        images: data.__allowedImages,
+      };
+      // todo: trigger react query mutation with Velakit
+      return SecretsService.createSecret(
+        "native",
+        "repo",
+        org,
+        repo,
+        createSecretBody
+      );
+    },
+    onError(error: any, ...args) {
+      console.log({ error, args });
+      FailedToast.publish();
+    },
+    onSuccess() {
+      SuccessToast.publish();
+    },
+  });
+
+  const onSubmit: SubmitHandler<any> = (data) => {
+    addSecretMutation.mutate(data);
   };
 
+  const { data, isLoading, isSuccess, failureReason } = addSecretMutation;
+
+  const failureString =
+    ((failureReason && typeof failureReason?.body) === "string"
+      ? JSON.parse(failureReason?.body)?.error
+      : failureReason?.body?.error) ?? "Unknown Error";
+
+  console.log({ data });
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -151,7 +203,7 @@ export function RepoSecretsAddWidget({ org, repo }: RepoSecretsAddWidgetProps) {
                 <RadioGroup.Root
                   id="allow_commands"
                   className="flex flex-col gap-2.5"
-                  defaultValue="default"
+                  defaultValue="true"
                   aria-label="Allow commands"
                 >
                   <div className="flex items-center">
@@ -189,9 +241,22 @@ export function RepoSecretsAddWidget({ org, repo }: RepoSecretsAddWidgetProps) {
                 </RadioGroup.Root>
               </div>
               <div className="text-sm">Need help? Visit our docs!</div>
-              <button type="submit" className="btn-primary">
-                Save
-              </button>
+              {isSuccess ? (
+                <Link
+                  className="btn-primary"
+                  to={`/${org}/${repo}/$/secrets/native}`}
+                >
+                  ← Back to Secrets
+                </Link>
+              ) : (
+                <SaveButton isLoading={isLoading} />
+              )}
+              <SuccessToast.Component type="success" title="Success">
+                Successfully saved your secret
+              </SuccessToast.Component>
+              <FailedToast.Component type="error" title="Error">
+                {failureString}
+              </FailedToast.Component>
             </div>
           </div>
         </div>

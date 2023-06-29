@@ -7,12 +7,12 @@ import { Checkbox } from "./formInputs/Checkbox";
 
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { SecretsService } from "../api";
-import { IconGear } from "./IconGear";
 import { SecretCorrected, SecretPost } from "../api/models/Secret";
 import { useMutation } from "@tanstack/react-query";
 import { Loader } from "./Loader";
 import { useToast } from "./Toast";
 import { Link } from "react-router-dom";
+import { IconPlus } from "./IconPlus";
 
 export interface RepoSecretsAddWEditidgetProps {
   org: string;
@@ -195,7 +195,7 @@ export function RepoSecretsAddEditWidget({
                   <h2>Allowed Images</h2>
                   <div className="mb-4">
                     <div className="block w-6 h-6" onClick={() => append("")}>
-                      <IconGear />
+                      <IconPlus />
                     </div>
                   </div>
                 </div>

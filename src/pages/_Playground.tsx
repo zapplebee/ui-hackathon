@@ -1,10 +1,8 @@
-import { useRef } from "react";
-import { Toast, ToastCommands } from "../components/Toast";
+import { useToast } from "../components/Toast";
 
 export function Playground() {
-  const autoSaveRef = useRef<ToastCommands>(null);
-  const savedRef = useRef<ToastCommands>(null);
-  const errRef = useRef<ToastCommands>(null);
+  const Toast = useToast();
+  const Toast2 = useToast();
 
   return (
     <>
@@ -12,38 +10,27 @@ export function Playground() {
         <button
           className="btn-primary"
           onClick={() => {
-            savedRef.current?.publish();
+            Toast.publish();
           }}
         >
           Save
         </button>
         <button
-          className="btn-secondary"
+          className="btn-primary"
           onClick={() => {
-            autoSaveRef.current?.publish();
+            Toast2.publish();
           }}
         >
-          Autosave
-        </button>
-        <button
-          className="btn-secondary"
-          onClick={() => {
-            errRef.current?.publish();
-          }}
-        >
-          Error
+          Save
         </button>
       </div>
 
-      <Toast ref={savedRef} title={<h2>Saved</h2>} type="success">
+      <Toast.Component title={<h2>Saved</h2>} type="success">
         Saved successfully!
-      </Toast>
-      <Toast ref={autoSaveRef} title={<h2>Autosave</h2>} type="info">
-        Automatically saved.
-      </Toast>
-      <Toast ref={errRef} title={<h2>Error</h2>} type="error">
-        Sorry, we could not save. Try again later.
-      </Toast>
+      </Toast.Component>
+      <Toast2.Component title={<h2>Saved</h2>} type="error">
+        Info
+      </Toast2.Component>
     </>
   );
 }

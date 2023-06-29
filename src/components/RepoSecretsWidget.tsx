@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { ApiError, SecretsService } from "../api";
-import { IconGear } from "./IconGear";
+import { IconCopy } from "./IconCopy";
 import { IconPlus } from "./IconPlus";
 import { Loader } from "./Loader";
 import { Table } from "./Table";
@@ -54,7 +54,7 @@ export function RepoSecretsWidget({ org, repo }: RepoSecretsWidgetProps) {
               >
                 Add Repo Secret
                 <span className="inline-block h-6 w-6">
-                  <IconGear />
+                  <IconPlus />
                 </span>
               </Link>
             </>
@@ -118,7 +118,7 @@ export function RepoSecretsWidget({ org, repo }: RepoSecretsWidgetProps) {
                             title="copy secret yaml to clipboard"
                           >
                             <span className="block h-6 w-6">
-                              <IconPlus />
+                              <IconCopy />
                             </span>
                           </button>
                         </td>

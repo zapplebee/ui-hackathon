@@ -92,7 +92,7 @@ export function RepoSecretsAddWidget({ org, repo }: RepoSecretsAddWidgetProps) {
       type: "repo",
       team: null,
       events: data.events,
-      allow_command: data.allowCommands,
+      allow_command: data.allowCommands === "true",
       name: data.secretName,
       value: data.secretValue,
       images: data.__allowedImages,

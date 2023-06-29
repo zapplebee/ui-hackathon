@@ -28,59 +28,13 @@ function Reverse({ children }: any) {
   );
 }
 
-function AllowList() {
-  const [inputValue, setInputValue] = useState<string>("");
-  const [allowedImages, setAllowedImages] = useState<Array<string>>([]);
-
-  const appendAllowedImage = () => {
-    setAllowedImages((imgs) => {
-      if (inputValue !== "") {
-        const imgSet = new Set(imgs);
-        imgSet.add(inputValue);
-        return [...imgSet.values()];
-      }
-      return imgs;
-    });
-    setInputValue("");
-  };
-
-  return (
-    <>
-      <Input
-        onChange={(e) => setInputValue(e.target.value)}
-        placeholder="Image Name"
-        label="Limit to Docker Images"
-        labelDetail={
-          <LabelDetail>
-            (Leave blank to enable this secret for all images)
-          </LabelDetail>
-        }
-      />
-      <button onClick={appendAllowedImage}>Add Image</button>
-      {allowedImages.length === 0 ? (
-        <div className="font-mono bg-vela-coal-dark text-sm p-2">
-          enabled for all images
-        </div>
-      ) : null}
-      {allowedImages.length !== 0 ? JSON.stringify(allowedImages) : null}
-    </>
-  );
-}
-
 export function RepoSecretsAddWidget({ org, repo }: RepoSecretsAddWidgetProps) {
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<any>();
+  const { register, handleSubmit, control } = useForm<any>();
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control, // control props comes from useForm (optional: if you are using FormContext)
-      name: "_allowedImages", // unique name for your Field Array
-    }
-  );
+  const { fields, append, remove } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: "_allowedImages", // unique name for your Field Array
+  });
 
   const onSubmit: SubmitHandler<any> = (data) => {
     // todo: data massaging

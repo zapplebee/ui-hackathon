@@ -122,7 +122,13 @@ export function RepoSecretsWidget({ org, repo }: RepoSecretsWidgetProps) {
                             </span>
                           </button>
                         </td>
-                        <td>{secret.name}</td>
+                        <td>
+                          <Link
+                            to={`/${org}/${repo}/$/secrets/native/${secret.name}`}
+                          >
+                            {secret.name}
+                          </Link>
+                        </td>
                         <td>
                           {secret.org}/{secret.repo}/{secret.name}
                         </td>

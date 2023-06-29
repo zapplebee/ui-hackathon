@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { ApiError, SecretsService } from "../api";
 import { IconCopy } from "./IconCopy";
-import { Loader } from "./Loader";
 import { IconGear } from "./IconGear";
+import { Loader } from "./Loader";
 import { Table } from "./Table";
 
 export interface OrgSharedSecretsWidgetProps {
@@ -84,11 +84,12 @@ export function OrgSharedSecretsWidget({
           {orgTeamSecretsQuery.data.length === 0 ? (
             <>
               <p>
-                There are no shared secrets{" "}
+                There are no shared secrets for{" "}
                 <code>
                   {org}:{team}
                 </code>{" "}
-                yet.
+                yet. Create a new team in this organization to add shared
+                secrets.
               </p>
             </>
           ) : (

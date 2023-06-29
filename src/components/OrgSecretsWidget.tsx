@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { ApiError, SecretsService } from "../api";
 import { IconCopy } from "./IconCopy";
+import { IconPlus } from "./IconPlus";
 import { Loader } from "./Loader";
-import { IconGear } from "./IconGear";
 import { Table } from "./Table";
 
 export interface OrgSecretsWidgetProps {
@@ -50,7 +50,7 @@ export function OrgSecretsWidget({ org }: OrgSecretsWidgetProps) {
               <button className="btn-secondary flex items-center gap-2">
                 Add Org Secret
                 <span className="inline-block h-6 w-6">
-                  <IconGear />
+                  <IconPlus />
                 </span>
               </button>
             </>

@@ -1,16 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
-import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
-import { Deployment, DeploymentService } from "../api";
-import { usePageParam } from "../library/hooks/usePageParam";
-import { Loader } from "../components/Loader";
-import React from "react";
-import { StatusIndicator } from "../components/StatusIndicator";
-import classNames from "classnames";
-import { Link } from "react-router-dom";
-import { IconGear } from "../components/IconGear";
-import { TopBumper } from "../components/TopBumper";
 import { Menu, Transition } from "@headlessui/react";
+import { useQuery } from "@tanstack/react-query";
+import classNames from "classnames";
+import React from "react";
+import { Link } from "react-router-dom";
+import { Deployment, DeploymentService } from "../api";
+import { IconGear } from "../components/IconGear";
+import { IconPlus } from "../components/IconPlus";
+import { Loader } from "../components/Loader";
 import { Pager } from "../components/Pager";
+import { StatusIndicator } from "../components/StatusIndicator";
+import { TopBumper } from "../components/TopBumper";
+import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
+import { usePageParam } from "../library/hooks/usePageParam";
 
 export function RepoDeployments() {
   const { org, repo } = useOrgRepoParams();
@@ -38,19 +39,7 @@ export function RepoDeployments() {
                 className="btn-secondary flex items-center gap-2"
               >
                 <span>Add Deployment</span>
-                <svg
-                  fill="none"
-                  height="18"
-                  width="18"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
+                <IconPlus />
               </Link>
             </div>
           ) : null}

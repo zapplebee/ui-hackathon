@@ -42,6 +42,7 @@ import { RepoSecrets } from "./pages/RepoSecrets";
 import { RepoSettings } from "./pages/RepoSettings";
 import { Playground } from "./pages/_Playground";
 import { RepoSecretsAdd } from "./pages/RepoSecretsAdd";
+import { RepoSecretsEdit } from "./pages/RepoSecretsEdit";
 
 const queryClient = new QueryClient();
 
@@ -205,6 +206,11 @@ const router = createBrowserRouter([
               {
                 path: "/:org/:repo/$/secrets/:engine/add",
                 element: <RepoSecretsAdd />,
+              },
+              // TODO: if a secret is named `add` there is no way to view or edit it
+              {
+                path: "/:org/:repo/$/secrets/:engine/:secretName",
+                element: <RepoSecretsEdit />,
               },
               {
                 path: "/:org/:repo/settings",

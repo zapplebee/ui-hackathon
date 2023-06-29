@@ -8,15 +8,17 @@ import { Checkbox } from "./formInputs/Checkbox";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { SecretsService } from "../api";
 import { IconGear } from "./IconGear";
-import { SecretPost } from "../api/models/Secret";
+import { SecretCorrected, SecretPost } from "../api/models/Secret";
 import { useMutation } from "@tanstack/react-query";
 import { Loader } from "./Loader";
 import { useToast } from "./Toast";
 import { Link } from "react-router-dom";
 
-export interface RepoSecretsAddWidgetProps {
+export interface RepoSecretsAddWEditidgetProps {
   org: string;
   repo: string;
+  secretName?: string;
+  mode: "edit" | "add" | "view";
 }
 
 function Spacer() {
@@ -34,28 +36,45 @@ function Reverse({ children }: any) {
 function SaveButton({ isLoading }: any) {
   if (isLoading) {
     return (
-      <button
-        type="submit"
-        className="btn-primary opacity-30 flex align-middle justify-center"
-        disabled
-      >
+      <div className="btn-primary opacity-30 flex align-middle justify-center">
         <Loader />
-      </button>
+      </div>
     );
   }
-  return (
-    <button type="submit" className="btn-primary">
-      Save
-    </button>
-  );
+  return <input type="submit" className="btn-primary" value="Save" />;
 }
 
-export function RepoSecretsAddWidget({ org, repo }: RepoSecretsAddWidgetProps) {
-  const { register, handleSubmit, control } = useForm<any>();
+export function RepoSecretsAddEditWidget({
+  org,
+  repo,
+  secretName,
+  mode,
+}: RepoSecretsAddWEditidgetProps) {
+  const { register, handleSubmit, control } = useForm<any>({
+    defaultValues: async () => {
+      if (mode === "add") {
+        return {};
+      }
+      const resp = (await SecretsService.getSecret(
+        "native",
+        "repo",
+        org!,
+        repo,
+        secretName!
+      )) as unknown as SecretCorrected;
+
+      return {
+        secretName: resp.name,
+        events: resp.events,
+        allowCommands: JSON.stringify(resp.allow_command),
+        allowedImages: resp.images,
+      };
+    },
+  });
 
   const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
-    name: "_allowedImages", // unique name for your Field Array
+    name: "allowedImages", // unique name for your Field Array
   });
 
   const SuccessToast = useToast();
@@ -73,20 +92,32 @@ export function RepoSecretsAddWidget({ org, repo }: RepoSecretsAddWidgetProps) {
         events: data.events,
         allow_command: data.allowCommands === "true",
         name: data.secretName,
-        value: data.secretValue,
-        images: data.__allowedImages,
+        value:
+          mode === "add" || data.secretValue !== "" ? data.secretValue : null,
+        images: data.allowedImages,
       };
-      // todo: trigger react query mutation with Velakit
-      return SecretsService.createSecret(
+
+      if (mode === "add") {
+        return SecretsService.createSecret(
+          "native",
+          "repo",
+          org,
+          repo,
+          createSecretBody
+        );
+      }
+
+      return SecretsService.updateSecrets(
         "native",
         "repo",
         org,
         repo,
-        createSecretBody
+        secretName as string,
+        createSecretBody as any
       );
     },
-    onError(error: any, ...args) {
-      console.log({ error, args });
+    onError(error: any) {
+      console.log({ error });
       FailedToast.publish();
     },
     onSuccess() {
@@ -98,14 +129,13 @@ export function RepoSecretsAddWidget({ org, repo }: RepoSecretsAddWidgetProps) {
     addSecretMutation.mutate(data);
   };
 
-  const { data, isLoading, isSuccess, failureReason } = addSecretMutation;
+  const { isLoading, isSuccess, failureReason } = addSecretMutation;
 
   const failureString =
     ((failureReason && typeof failureReason?.body) === "string"
       ? JSON.parse(failureReason?.body)?.error
       : failureReason?.body?.error) ?? "Unknown Error";
 
-  console.log({ data });
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -164,12 +194,9 @@ export function RepoSecretsAddWidget({ org, repo }: RepoSecretsAddWidgetProps) {
                 <div className="flex items-center gap-4">
                   <h2>Allowed Images</h2>
                   <div className="mb-4">
-                    <button
-                      className="block w-6 h-6"
-                      onClick={() => append("")}
-                    >
+                    <div className="block w-6 h-6" onClick={() => append("")}>
                       <IconGear />
-                    </button>
+                    </div>
                   </div>
                 </div>
 
@@ -182,11 +209,13 @@ export function RepoSecretsAddWidget({ org, repo }: RepoSecretsAddWidgetProps) {
                   <div key={field.id} className="flex gap-4 items-center pl-4">
                     <Input
                       label="Image Name"
-                      {...register(`_allowedImages.${index}`)}
+                      {...register(`allowedImages.${index}`)}
                     />
 
                     <div>
-                      <button onClick={() => remove(index)}>x</button>
+                      <button type="button" onClick={() => remove(index)}>
+                        x
+                      </button>
                     </div>
                   </div>
                 ))}

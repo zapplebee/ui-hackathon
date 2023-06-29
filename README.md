@@ -23,9 +23,9 @@ This is a proof of concept of what vela could look like with vite and tailwind.
 - [ ] better mobile designs
   - [x] once over pass of existing pages
 - [ ] write-centric-pages (e.g. anything with forms)
-  - [ ] consider [react-hook-form](https://www.npmjs.com/package/react-hook-form)
+  - [x] consider [react-hook-form](https://www.npmjs.com/package/react-hook-form)
   - [ ] add deployment
-  - [ ] add repo secret
+  - [x] add repo secret
   - [ ] add org secret
   - [ ] add shared secret
   - [ ] settings
@@ -45,38 +45,40 @@ Zac Skalko exported "Velakit". It's been inlined into this repository but could 
 
 `./src/api` was generated with ...
 
-* [openapi-typescript-codegen](https://www.npmjs.com/package/)
-* [jcgregorio/typescriptify-golang-structs](https://pkg.go.dev/github.com/jcgregorio/typescriptify-golang-structs)
-* and this node script...
+- [openapi-typescript-codegen](https://www.npmjs.com/package/)
+- [jcgregorio/typescriptify-golang-structs](https://pkg.go.dev/github.com/jcgregorio/typescriptify-golang-structs)
+- and this node script...
 
-    ```js
-    const yaml = require("yaml");
-    const child_process = require("child_process");
-    const fs = require("fs");
+  ```js
+  const yaml = require("yaml");
+  const child_process = require("child_process");
+  const fs = require("fs");
 
-    const swag = yaml.parse(fs.readFileSync("vela-swagger-doc.yml").toString("utf-8"));
+  const swag = yaml.parse(
+    fs.readFileSync("vela-swagger-doc.yml").toString("utf-8")
+  );
 
-    const defs = {};
+  const defs = {};
 
-    Object.entries(swag.definitions).forEach(([key, v]) => {
-      if (!defs[v["x-go-package"]]) {
-        defs[v["x-go-package"]] = [v["x-go-name"] ?? key];
-      } else {
-        defs[v["x-go-package"]].push(v["x-go-name"] ?? key);
-      }
-    });
+  Object.entries(swag.definitions).forEach(([key, v]) => {
+    if (!defs[v["x-go-package"]]) {
+      defs[v["x-go-package"]] = [v["x-go-name"] ?? key];
+    } else {
+      defs[v["x-go-package"]].push(v["x-go-name"] ?? key);
+    }
+  });
 
-    const foo = new Set();
+  const foo = new Set();
 
-    Object.entries(defs).forEach(([package, structs]) => {
-      structs.forEach((s) => foo.add(s));
-      const command = `tscriptify -package=${package} -target=${package
-        .replace(/\//gi, "_")
-        .replace(/\./gi, "")}.ts ${structs.join(" ")}`;
-      console.log(command);
-      child_process.execSync(command);
-    });
-    ```
+  Object.entries(defs).forEach(([package, structs]) => {
+    structs.forEach((s) => foo.add(s));
+    const command = `tscriptify -package=${package} -target=${package
+      .replace(/\//gi, "_")
+      .replace(/\./gi, "")}.ts ${structs.join(" ")}`;
+    console.log(command);
+    child_process.execSync(command);
+  });
+  ```
 
 😬 **note** that the api bindings for the vela swagger api were _not_ always sufficient.
 
@@ -103,8 +105,8 @@ docker compose up
 
 1. set your `.env.local` file, with environment variable `VITE_VELA_API="..."`
 2. use the proxy configuration option `USE_PROXY="..." yarn dev`
-  
-    or combine them `VITE_VELA_API="..." USE_PROXY="..."` yarn dev
+
+   or combine them `VITE_VELA_API="..." USE_PROXY="..."` yarn dev
 
 😸 **this is useful** if you want to test against a live vela backend
 

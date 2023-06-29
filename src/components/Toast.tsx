@@ -80,3 +80,18 @@ export const Toast = React.forwardRef<ToastCommands, ToastProps>(
     );
   }
 );
+
+export const useToast = () => {
+  const ref = React.useRef<{ publish: () => void }>(null);
+
+  const publish = () => {
+    ref?.current?.publish();
+  };
+
+  const Component = React.useMemo(
+    () => (props: ToastProps) => <Toast {...props} ref={ref} />,
+    []
+  );
+
+  return { publish, Component };
+};

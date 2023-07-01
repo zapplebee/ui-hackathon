@@ -10,7 +10,7 @@ import { FavoriteStar } from "../components/FavoriteStar";
 import { Helmet } from "react-helmet-async";
 import { mapOrgRepoToString } from "../library/utils";
 import { Searchbar } from "../components/Searchbar";
-import { Toast, ToastCommands } from "../components/Toast";
+import { Toast, ToastCommands } from "../components/toast/Toast";
 
 type OverrideGetSourceReposType = Record<string, Repo[]>;
 

@@ -10,9 +10,9 @@ import { SecretsService } from "../api";
 import { SecretCorrected, SecretPost } from "../api/models/Secret";
 import { useMutation } from "@tanstack/react-query";
 import { Loader } from "./Loader";
-import { useToast } from "./Toast";
 import { Link } from "react-router-dom";
 import { IconPlus } from "./icons/IconPlus.tsx";
+import { useToast } from "./toast/useToast.tsx";
 
 export interface RepoSecretsAddWEditidgetProps {
   org: string;
@@ -36,7 +36,7 @@ function Reverse({ children }: any) {
 function SaveButton({ isLoading }: any) {
   if (isLoading) {
     return (
-      <div className="btn-primary opacity-30 flex align-middle justify-center">
+      <div className="btn-primary flex justify-center align-middle opacity-30">
         <Loader />
       </div>
     );
@@ -142,9 +142,9 @@ export function RepoSecretsAddEditWidget({
         <h2 className="border-b-2 border-b-vela-lavender text-2xl font-bold">
           Add Repo Secret
         </h2>
-        <div className="mb-4 mt-4 flex items-center justify-between max-w-3xl">
-          <div className="flex items-center gap-4 w-full">
-            <div className="flex flex-col w-full gap-4">
+        <div className="mb-4 mt-4 flex max-w-3xl items-center justify-between">
+          <div className="flex w-full items-center gap-4">
+            <div className="flex w-full flex-col gap-4">
               <Input
                 placeholder="Secret Name"
                 label="Name"
@@ -157,7 +157,7 @@ export function RepoSecretsAddEditWidget({
                 Limit to Events{" "}
                 <LabelDetail>(at least one event must be selected)</LabelDetail>
               </div>
-              <div className="p-4 bg-vela-coal-light text-white text-sm">
+              <div className="bg-vela-coal-light p-4 text-sm text-white">
                 Disclaimer: Native secrets do NOT have the pull_request event
                 enabled by default. This is intentional to help mitigate
                 exposure via a pull request against the repo. You can override
@@ -194,19 +194,19 @@ export function RepoSecretsAddEditWidget({
                 <div className="flex items-center gap-4">
                   <h2>Allowed Images</h2>
                   <div className="mb-4">
-                    <div className="block w-6 h-6" onClick={() => append("")}>
+                    <div className="block h-6 w-6" onClick={() => append("")}>
                       <IconPlus />
                     </div>
                   </div>
                 </div>
 
                 {fields.length === 0 ? (
-                  <div className="font-mono bg-vela-coal-dark text-sm p-2 mr-4 ml-4">
+                  <div className="ml-4 mr-4 bg-vela-coal-dark p-2 font-mono text-sm">
                     enabled for all images
                   </div>
                 ) : null}
                 {fields.map((field, index) => (
-                  <div key={field.id} className="flex gap-4 items-center pl-4">
+                  <div key={field.id} className="flex items-center gap-4 pl-4">
                     <Input
                       label="Image Name"
                       {...register(`allowedImages.${index}`)}
@@ -237,15 +237,15 @@ export function RepoSecretsAddEditWidget({
                 >
                   <div className="flex items-center">
                     <RadioGroup.Item
-                      className="bg-vela-coal-dark border-2 border-vela-cyan rounded-full w-[25px] h-[25px]"
+                      className="h-[25px] w-[25px] rounded-full border-2 border-vela-cyan bg-vela-coal-dark"
                       value="true"
                       id="r1"
                       {...register("allowCommands")}
                     >
-                      <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-[11px] after:h-[11px] after:rounded-[50%] after:bg-vela-cyan" />
+                      <RadioGroup.Indicator className="relative flex h-full w-full items-center justify-center after:block after:h-[11px] after:w-[11px] after:rounded-[50%] after:bg-vela-cyan after:content-['']" />
                     </RadioGroup.Item>
                     <label
-                      className="text-white text-[15px] leading-none pl-[15px]"
+                      className="pl-[15px] text-[15px] leading-none text-white"
                       htmlFor="r1"
                     >
                       Yes
@@ -253,15 +253,15 @@ export function RepoSecretsAddEditWidget({
                   </div>
                   <div className="flex items-center">
                     <RadioGroup.Item
-                      className="bg-vela-coal-dark border-2 border-vela-cyan rounded-full w-[25px] h-[25px]"
+                      className="h-[25px] w-[25px] rounded-full border-2 border-vela-cyan bg-vela-coal-dark"
                       value="false"
                       id="r2"
                       {...register("allowCommands")}
                     >
-                      <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-[11px] after:h-[11px] after:rounded-[50%] after:bg-vela-cyan" />
+                      <RadioGroup.Indicator className="relative flex h-full w-full items-center justify-center after:block after:h-[11px] after:w-[11px] after:rounded-[50%] after:bg-vela-cyan after:content-['']" />
                     </RadioGroup.Item>
                     <label
-                      className="text-white text-[15px] leading-none pl-[15px]"
+                      className="pl-[15px] text-[15px] leading-none text-white"
                       htmlFor="r2"
                     >
                       No

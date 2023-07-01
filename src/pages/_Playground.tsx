@@ -1,4 +1,4 @@
-import { useToast } from "../components/Toast";
+import { useToast } from "../components/toast/useToast";
 
 export function Playground() {
   const Toast = useToast();

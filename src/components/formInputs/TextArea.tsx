@@ -1,20 +1,20 @@
-import React from "react";
+import React, { useId } from "react";
 
 import * as Label from "@radix-ui/react-label";
 
-type TextArea = {
-  label: string;
+type TextareaProps = {
+  label: React.ReactNode;
 } & React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLTextAreaElement>,
   HTMLTextAreaElement
 >;
 
-export const TextArea = React.forwardRef<HTMLTextAreaElement, TextArea>(
-  ({ label, ...inputProps }: TextArea, ref) => {
-    const id = label.replace(/[^a-zA-Z0-9]/gi, "_") + "_textarea";
+export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+  function RefTextarea({ label, ...inputProps }: TextareaProps, ref) {
+    const id = useId();
     return (
       <>
-        <Label.Root className="" htmlFor={id}>
+        <Label.Root className="font-bold" htmlFor={id}>
           {label}
         </Label.Root>
         <textarea

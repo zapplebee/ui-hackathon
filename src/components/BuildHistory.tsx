@@ -1,10 +1,10 @@
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { Build } from "../api";
-import { IconFailureMini } from "./IconFailureMini";
-import { IconRunningMini } from "./IconRunningMini";
-import { IconSuccessMini } from "./IconSuccessMini";
-import { IconPendingMini } from "./IconPendingMini";
+import { IconFailureMini } from "./icons/IconFailureMini.tsx";
+import { IconRunningMini } from "./icons/IconRunningMini.tsx";
+import { IconSuccessMini } from "./icons/IconSuccessMini.tsx";
+import { IconPendingMini } from "./icons/IconPendingMini.tsx";
 
 export interface Props {
   org: string;

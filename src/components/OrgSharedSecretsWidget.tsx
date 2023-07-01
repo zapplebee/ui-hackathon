@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ApiError, SecretsService } from "../api";
-import { IconCopy } from "./IconCopy";
-import { IconGear } from "./IconGear";
+import { IconCopy } from "./icons/IconCopy.tsx";
+import { IconGear } from "./icons/IconGear.tsx";
 import { Loader } from "./Loader";
 import { Table } from "./Table";
 

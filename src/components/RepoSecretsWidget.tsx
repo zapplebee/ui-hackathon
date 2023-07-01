@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { ApiError, SecretsService } from "../api";
-import { IconCopy } from "./IconCopy";
-import { IconPlus } from "./IconPlus";
+import { IconCopy } from "./icons/IconCopy.tsx";
+import { IconPlus } from "./icons/IconPlus.tsx";
 import { Loader } from "./Loader";
 import { Table } from "./Table";
 

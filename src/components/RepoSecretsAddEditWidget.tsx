@@ -12,7 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Loader } from "./Loader";
 import { useToast } from "./Toast";
 import { Link } from "react-router-dom";
-import { IconPlus } from "./IconPlus";
+import { IconPlus } from "./icons/IconPlus.tsx";
 
 export interface RepoSecretsAddWEditidgetProps {
   org: string;

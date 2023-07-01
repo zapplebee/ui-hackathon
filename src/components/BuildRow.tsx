@@ -5,7 +5,7 @@ import { StatusIndicator } from "./StatusIndicator";
 
 import { Menu, Transition } from "@headlessui/react";
 import React from "react";
-import { IconGear } from "./IconGear";
+import { IconGear } from "./icons/IconGear.tsx";
 import { TimeDuration } from "./TimeDuration";
 import { TimeTicker3 } from "./TimeTicker3";
 

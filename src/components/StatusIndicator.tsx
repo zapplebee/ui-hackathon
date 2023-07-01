@@ -1,7 +1,7 @@
-import { IconFailure } from "./IconFailure";
-import { IconPending } from "./IconPending";
-import { IconRunning } from "./IconRunning";
-import { IconSuccess } from "./IconSuccess";
+import { IconFailure } from "./icons/IconFailure.tsx";
+import { IconPending } from "./icons/IconPending.tsx";
+import { IconRunning } from "./icons/IconRunning.tsx";
+import { IconSuccess } from "./icons/IconSuccess.tsx";
 
 interface StatusIndicatorProps {
   status: string;

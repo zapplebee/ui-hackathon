@@ -23,7 +23,6 @@ export const Toast = React.forwardRef<ToastCommands, ToastProps>(
     return (
       <>
         {Array.from({ length: count.length }).map((_, index) => {
-          // const {} = toastProps;
           const cls = classNames(
             "relative grid grid-cols-[auto_max-content] items-center gap-x-4 border bg-vela-coal-dark p-4 shadow-md [grid-template-areas:_'title_action'_'description_action'] data-[swipe=cancel]:translate-x-0 data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[state=closed]:animate-hide data-[state=open]:animate-slideIn data-[swipe=end]:animate-swipeOut data-[swipe=cancel]:transition-[transform_200ms_ease-out]",
             { "border-vela-cyan": type === "info" },
@@ -31,19 +30,7 @@ export const Toast = React.forwardRef<ToastCommands, ToastProps>(
             { "border-vela-red": type === "error" }
           );
           return (
-            <ToastPrimitive.Root
-              key={index}
-              {...toastProps}
-              onClick={() => {
-                // allows the toast to hide if clicked
-                // if (e.currentTarget === e.target) {
-                //   setOpen(false);
-                // }
-              }}
-              className={cls}
-              // open={open}
-              // onOpenChange={setOpen}
-            >
+            <ToastPrimitive.Root key={index} {...toastProps} className={cls}>
               <ToastPrimitive.Title className="mb-2 text-base font-bold text-white [grid-area:_title]">
                 {title}
               </ToastPrimitive.Title>
@@ -80,18 +67,3 @@ export const Toast = React.forwardRef<ToastCommands, ToastProps>(
     );
   }
 );
-
-export const useToast = () => {
-  const ref = React.useRef<{ publish: () => void }>(null);
-
-  const publish = () => {
-    ref?.current?.publish();
-  };
-
-  const Component = React.useMemo(
-    () => (props: ToastProps) => <Toast {...props} ref={ref} />,
-    []
-  );
-
-  return { publish, Component };
-};

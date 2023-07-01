@@ -1,22 +1,21 @@
-import React, { ReactNode } from "react";
+import React, { useId } from "react";
 
 import * as Label from "@radix-ui/react-label";
 
 type InputProps = {
-  label: string;
-  labelDetail?: ReactNode;
+  label: React.ReactNode;
 } & React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement
 >;
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ label, labelDetail, ...inputProps }: InputProps, ref) => {
-    const id = label.replace(/[^a-zA-Z0-9]/gi, "_") + "_input";
+  function RefInput({ label, ...inputProps }: InputProps, ref) {
+    const id = useId();
     return (
       <>
-        <Label.Root className="" htmlFor={id}>
-          {label} {labelDetail}
+        <Label.Root className="font-bold" htmlFor={id}>
+          {label}
         </Label.Root>
         <input
           {...inputProps}

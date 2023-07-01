@@ -1,31 +1,29 @@
-import React, { ReactNode } from "react";
+import React, { useId } from "react";
 
 import * as Label from "@radix-ui/react-label";
 
 type CheckboxProps = {
-  label: string;
-  labelDetail?: ReactNode;
+  label: React.ReactNode;
 } & React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement
 >;
 
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ label, labelDetail, ...inputProps }: CheckboxProps, ref) => {
-    const id = label.replace(/[^a-zA-Z0-9]/gi, "_") + "_checkbox";
+  ({ label, ...inputProps }: CheckboxProps, ref) => {
+    const id = useId();
     return (
       <>
-        <Label.Root className="" htmlFor={id}>
-          {label}
-          {labelDetail}
-        </Label.Root>
         <input
           {...inputProps}
           ref={ref}
           type="checkbox"
-          className=" bg-vela-cyan checked:bg-vela-cyan hover:bg-vela-cyan focus:bg-vela-cyan focus:text-vela-cyan focus-within:text-vela-cyan"
+          className=" bg-vela-cyan checked:bg-vela-cyan focus-within:text-vela-cyan hover:bg-vela-cyan focus:bg-vela-cyan focus:text-vela-cyan"
           id={id}
         />
+        <Label.Root className="font-bold" htmlFor={id}>
+          {label}
+        </Label.Root>
       </>
     );
   }

@@ -1,17 +1,22 @@
 import * as RadioGroup from "@radix-ui/react-radio-group";
 
 import { Input } from "./formInputs/Input.tsx";
-import { TextArea } from "./formInputs/TextArea.tsx";
-import { LabelDetail } from "./formInputs/LabelDetail.tsx";
+import { Textarea } from "./formInputs/TextArea.tsx";
+
 import { Checkbox } from "./formInputs/Checkbox.tsx";
 
+import { useMutation } from "@tanstack/react-query";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { SecretsService } from "../api/index.ts";
 import { SecretCorrected, SecretPost } from "../api/models/Secret.ts";
-import { useMutation } from "@tanstack/react-query";
+import { ExternalLink } from "./ExternalLink.tsx";
+import { HelpText } from "./HelpText.tsx";
 import { Loader } from "./Loader.tsx";
-import { Link } from "react-router-dom";
-import { IconPlus } from "./icons/IconPlus.tsx";
+import { Notice } from "./Notice.tsx";
+import { PageTitle } from "./PageTitle.tsx";
+import { CheckboxContainer } from "./formInputs/CheckboxContainer.tsx";
+import { FormControl } from "./formInputs/FormControl.tsx";
 import { useToast } from "./toast/useToast.tsx";
 
 export interface RepoSecretsFormWidgetProps {
@@ -50,29 +55,31 @@ export function RepoSecretsFormWidget({
   secretName,
   mode,
 }: RepoSecretsFormWidgetProps) {
-  const { register, handleSubmit, control } = useForm<any>({
-    defaultValues: async () => {
-      if (mode === "add") {
-        return {};
-      }
-      const resp = (await SecretsService.getSecret(
-        "native",
-        "repo",
-        org!,
-        repo,
-        secretName!
-      )) as unknown as SecretCorrected;
+  const { register, handleSubmit, getValues, setValue, control } = useForm<any>(
+    {
+      defaultValues: async () => {
+        if (mode === "add") {
+          return {};
+        }
+        const resp = (await SecretsService.getSecret(
+          "native",
+          "repo",
+          org!,
+          repo,
+          secretName!
+        )) as unknown as SecretCorrected;
 
-      return {
-        secretName: resp.name,
-        events: resp.events,
-        allowCommands: JSON.stringify(resp.allow_command),
-        allowedImages: resp.images,
-      };
-    },
-  });
+        return {
+          secretName: resp.name,
+          events: resp.events,
+          allowCommands: JSON.stringify(resp.allow_command),
+          allowedImages: resp.images,
+        };
+      },
+    }
+  );
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, swap, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: "allowedImages", // unique name for your Field Array
   });
@@ -139,65 +146,113 @@ export function RepoSecretsFormWidget({
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h2 className="border-b-2 border-b-vela-lavender text-2xl font-bold">
-          Add Repo Secret
-        </h2>
+        <PageTitle>Add Repo Secret</PageTitle>
         <div className="mb-4 mt-4 flex max-w-3xl items-center justify-between">
           <div className="flex w-full items-center gap-4">
             <div className="flex w-full flex-col gap-4">
-              <Input
-                placeholder="Secret Name"
-                label="Name"
-                {...register("secretName")}
-              />
-              <Spacer />
-              <TextArea label="Value" {...register("secretValue")} />
-              <Spacer />
-              <div>
-                Limit to Events{" "}
-                <LabelDetail>(at least one event must be selected)</LabelDetail>
+              {/* Secret name */}
+              <FormControl>
+                <Input
+                  placeholder="Secret Name"
+                  label="Name"
+                  {...register("secretName")}
+                />
+              </FormControl>
+
+              {/* Secret Value */}
+              <FormControl>
+                <Textarea label="Value" {...register("secretValue")} />
+              </FormControl>
+
+              {/* Events */}
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold">Limit to Events</h3>
+                <div>
+                  <HelpText>(at least one event must be selected)</HelpText>
+                </div>
               </div>
-              <div className="bg-vela-coal-light p-4 text-sm text-white">
+              <Notice>
                 Disclaimer: Native secrets do NOT have the pull_request event
                 enabled by default. This is intentional to help mitigate
                 exposure via a pull request against the repo. You can override
                 this behavior, at your own risk, for each secret.
-              </div>
-              <Reverse>
-                <Checkbox label="Push" {...register("events[]")} value="push" />
-              </Reverse>
-              <Reverse>
-                <Checkbox
-                  label="Pull Request"
-                  {...register("events[]")}
-                  value="pull_request"
-                />
-              </Reverse>
-              <Reverse>
-                <Checkbox label="Tag" {...register("events[]")} value="tag" />
-              </Reverse>
-              <Reverse>
-                <Checkbox
-                  label="Comment"
-                  {...register("events[]")}
-                  value="comment"
-                />
-              </Reverse>
-              <Reverse>
-                <Checkbox
-                  label="Deployment"
-                  {...register("events[]")}
-                  value="deployment"
-                />
-              </Reverse>
+              </Notice>
               <div>
-                <div className="flex items-center gap-4">
-                  <h2>Allowed Images</h2>
-                  <div className="mb-4">
-                    <div className="block h-6 w-6" onClick={() => append("")}>
-                      <IconPlus />
-                    </div>
+                <CheckboxContainer>
+                  <Checkbox
+                    label="Push"
+                    {...register("events[]")}
+                    value="push"
+                  />
+                </CheckboxContainer>
+                <CheckboxContainer>
+                  <Checkbox
+                    label="Pull Request"
+                    {...register("events[]")}
+                    value="pull_request"
+                  />
+                </CheckboxContainer>
+                <CheckboxContainer>
+                  <Checkbox label="Tag" {...register("events[]")} value="tag" />
+                </CheckboxContainer>
+                <CheckboxContainer>
+                  <Checkbox
+                    label="Comment"
+                    {...register("events[]")}
+                    value="comment"
+                  />
+                </CheckboxContainer>
+                <CheckboxContainer>
+                  <Checkbox
+                    label="Deployment"
+                    {...register("events[]")}
+                    value="deployment"
+                  />
+                </CheckboxContainer>
+              </div>
+
+              {/* Allowed Images */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold">Limit to Docker Images</h3>
+                  <div>
+                    <HelpText>
+                      (Leave blank to enable this secret for all images)
+                    </HelpText>
                   </div>
+                </div>
+
+                <div className="flex items-center gap-4 pl-4">
+                  <div className="flex items-center gap-4">
+                    <Input
+                      label="Image name"
+                      {...register("_allowedImageName")}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="text-sm"
+                    onClick={() => {
+                      // todo: extract into handler?
+                      const newValue = getValues("_allowedImageName").trim();
+
+                      if (newValue === "") {
+                        return;
+                      }
+
+                      const existingValues = getValues("allowedImages");
+                      const set = [
+                        ...new Set([
+                          ...(existingValues ? existingValues : []),
+                          newValue,
+                        ]),
+                      ];
+                      setValue("allowedImages", set);
+                      setValue("_allowedImageName", "");
+                    }}
+                  >
+                    <div className="block h-6 w-6">add</div>
+                  </button>
                 </div>
 
                 {fields.length === 0 ? (
@@ -209,67 +264,85 @@ export function RepoSecretsFormWidget({
                   <div key={field.id} className="flex items-center gap-4 pl-4">
                     <Input
                       label="Image Name"
+                      disabled
                       {...register(`allowedImages.${index}`)}
                     />
 
                     <div>
-                      <button type="button" onClick={() => remove(index)}>
-                        x
+                      <button
+                        type="button"
+                        className="text-sm"
+                        onClick={() => remove(index)}
+                      >
+                        remove
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div>
-                Allow Commands{" "}
-                <LabelDetail>
-                  ("No" will disable this secret in commands)
-                </LabelDetail>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <h3>Allow Commands</h3>
+                  <div>
+                    <HelpText>
+                      ("No" will disable this secret in commands)
+                    </HelpText>
+                  </div>
+                </div>
+
+                <div>
+                  <RadioGroup.Root
+                    id="allow_commands"
+                    className="flex flex-col gap-2.5"
+                    defaultValue="true"
+                    aria-label="Allow commands"
+                  >
+                    <div className="flex items-center">
+                      <RadioGroup.Item
+                        className="h-[25px] w-[25px] rounded-full border-2 border-vela-cyan bg-vela-coal-dark"
+                        value="true"
+                        id="r1"
+                        {...register("allowCommands")}
+                      >
+                        <RadioGroup.Indicator className="relative flex h-full w-full items-center justify-center after:block after:h-[11px] after:w-[11px] after:rounded-[50%] after:bg-vela-cyan after:content-['']" />
+                      </RadioGroup.Item>
+                      <label
+                        className="pl-[15px] text-[15px] leading-none text-white"
+                        htmlFor="r1"
+                      >
+                        Yes
+                      </label>
+                    </div>
+                    <div className="flex items-center">
+                      <RadioGroup.Item
+                        className="h-[25px] w-[25px] rounded-full border-2 border-vela-cyan bg-vela-coal-dark"
+                        value="false"
+                        id="r2"
+                        {...register("allowCommands")}
+                      >
+                        <RadioGroup.Indicator className="relative flex h-full w-full items-center justify-center after:block after:h-[11px] after:w-[11px] after:rounded-[50%] after:bg-vela-cyan after:content-['']" />
+                      </RadioGroup.Item>
+                      <label
+                        className="pl-[15px] text-[15px] leading-none text-white"
+                        htmlFor="r2"
+                      >
+                        No
+                      </label>
+                    </div>
+                  </RadioGroup.Root>
+                </div>
               </div>
 
-              <div>
-                <RadioGroup.Root
-                  id="allow_commands"
-                  className="flex flex-col gap-2.5"
-                  defaultValue="true"
-                  aria-label="Allow commands"
+              <div className="text-sm">
+                Need help?{" "}
+                <ExternalLink
+                  href="https://go-vela.github.io/docs/tour/secrets/"
+                  rel=""
                 >
-                  <div className="flex items-center">
-                    <RadioGroup.Item
-                      className="h-[25px] w-[25px] rounded-full border-2 border-vela-cyan bg-vela-coal-dark"
-                      value="true"
-                      id="r1"
-                      {...register("allowCommands")}
-                    >
-                      <RadioGroup.Indicator className="relative flex h-full w-full items-center justify-center after:block after:h-[11px] after:w-[11px] after:rounded-[50%] after:bg-vela-cyan after:content-['']" />
-                    </RadioGroup.Item>
-                    <label
-                      className="pl-[15px] text-[15px] leading-none text-white"
-                      htmlFor="r1"
-                    >
-                      Yes
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <RadioGroup.Item
-                      className="h-[25px] w-[25px] rounded-full border-2 border-vela-cyan bg-vela-coal-dark"
-                      value="false"
-                      id="r2"
-                      {...register("allowCommands")}
-                    >
-                      <RadioGroup.Indicator className="relative flex h-full w-full items-center justify-center after:block after:h-[11px] after:w-[11px] after:rounded-[50%] after:bg-vela-cyan after:content-['']" />
-                    </RadioGroup.Item>
-                    <label
-                      className="pl-[15px] text-[15px] leading-none text-white"
-                      htmlFor="r2"
-                    >
-                      No
-                    </label>
-                  </div>
-                </RadioGroup.Root>
+                  Visit our docs!
+                </ExternalLink>
               </div>
-              <div className="text-sm">Need help? Visit our docs!</div>
               {isSuccess ? (
                 <Link
                   className="btn-primary"

@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { TopBumper } from "../components/TopBumper";
 import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
-import { RepoSecretsAddEditWidget } from "../components/RepoSecretsAddEditWidget";
+import { RepoSecretsFormWidget } from "../components/RepoSecretsFormWidget";
 
 export function RepoSecretsAdd() {
   const { org, repo } = useOrgRepoParams();
@@ -12,7 +12,7 @@ export function RepoSecretsAdd() {
       </Helmet>
       <TopBumper />
       <div>
-        <RepoSecretsAddEditWidget org={org!} repo={repo!} mode="add" />
+        <RepoSecretsFormWidget org={org!} repo={repo!} mode="add" />
         <div className="py-4"></div>
       </div>
     </>

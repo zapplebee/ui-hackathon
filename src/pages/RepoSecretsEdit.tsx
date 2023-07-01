@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { TopBumper } from "../components/TopBumper";
 import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
 import { useParams } from "react-router";
-import { RepoSecretsAddEditWidget } from "../components/RepoSecretsAddEditWidget";
+import { RepoSecretsFormWidget } from "../components/RepoSecretsFormWidget";
 
 export function RepoSecretsEdit() {
   const { secretName } = useParams();
@@ -16,7 +16,7 @@ export function RepoSecretsEdit() {
       </Helmet>
       <TopBumper />
       <div>
-        <RepoSecretsAddEditWidget
+        <RepoSecretsFormWidget
           org={org!}
           repo={repo!}
           mode={mode}

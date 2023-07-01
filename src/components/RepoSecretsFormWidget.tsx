@@ -1,20 +1,20 @@
 import * as RadioGroup from "@radix-ui/react-radio-group";
 
-import { Input } from "./formInputs/Input";
-import { TextArea } from "./formInputs/TextArea";
-import { LabelDetail } from "./formInputs/LabelDetail";
-import { Checkbox } from "./formInputs/Checkbox";
+import { Input } from "./formInputs/Input.tsx";
+import { TextArea } from "./formInputs/TextArea.tsx";
+import { LabelDetail } from "./formInputs/LabelDetail.tsx";
+import { Checkbox } from "./formInputs/Checkbox.tsx";
 
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { SecretsService } from "../api";
-import { SecretCorrected, SecretPost } from "../api/models/Secret";
+import { SecretsService } from "../api/index.ts";
+import { SecretCorrected, SecretPost } from "../api/models/Secret.ts";
 import { useMutation } from "@tanstack/react-query";
-import { Loader } from "./Loader";
+import { Loader } from "./Loader.tsx";
 import { Link } from "react-router-dom";
 import { IconPlus } from "./icons/IconPlus.tsx";
 import { useToast } from "./toast/useToast.tsx";
 
-export interface RepoSecretsAddWEditidgetProps {
+export interface RepoSecretsFormWidgetProps {
   org: string;
   repo: string;
   secretName?: string;
@@ -44,12 +44,12 @@ function SaveButton({ isLoading }: any) {
   return <input type="submit" className="btn-primary" value="Save" />;
 }
 
-export function RepoSecretsAddEditWidget({
+export function RepoSecretsFormWidget({
   org,
   repo,
   secretName,
   mode,
-}: RepoSecretsAddWEditidgetProps) {
+}: RepoSecretsFormWidgetProps) {
   const { register, handleSubmit, control } = useForm<any>({
     defaultValues: async () => {
       if (mode === "add") {

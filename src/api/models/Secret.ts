@@ -14,27 +14,15 @@ export type Secret = {
   origin?: PipelineContainer;
 };
 
-// {
-//   type: "repo",
-//   org: "ZacharySkalko",
-//   repo: "vela-test",
-//   team: null,
-//   name: "bin",
-//   value: "baz",
-//   events: ["deployment", "push", "tag"],
-//   images: ["dddd"],
-//   allow_command: true,
-// };
-
 export type SecretPost = {
   org: string;
   repo: string;
   team: string | null;
   name: string;
-  value: string; // we could probably omit this
+  value: string | null; // we could probably omit this
   type: "shared" | "org" | "repo"; // there are 3 types
   images: string[];
-  events: ["pull_request", "push", "tag", "deployment"][];
+  events: ("pull_request" | "push" | "tag" | "comment" | "deployment")[];
   allow_command: boolean;
 };
 

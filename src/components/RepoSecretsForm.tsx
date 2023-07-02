@@ -3,23 +3,26 @@ import * as RadioGroup from "@radix-ui/react-radio-group";
 import { Input } from "./formInputs/Input.tsx";
 import { Textarea } from "./formInputs/TextArea.tsx";
 
-import { Checkbox } from "./formInputs/Checkbox.tsx";
-
 import { useMutation } from "@tanstack/react-query";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import {
+  Controller,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import { Link } from "react-router-dom";
 import { SecretsService } from "../api/index.ts";
 import { SecretCorrected, SecretPost } from "../api/models/Secret.ts";
+import { getFailureText } from "../library/failure-reason.ts";
+import { addStringToSetArray } from "../library/set-utils.ts";
 import { ExternalLink } from "./ExternalLink.tsx";
 import { HelpText } from "./HelpText.tsx";
 import { Loader } from "./Loader.tsx";
 import { Notice } from "./Notice.tsx";
 import { PageTitle } from "./PageTitle.tsx";
-import { CheckboxContainer } from "./formInputs/CheckboxContainer.tsx";
+import { Checkbox } from "./formInputs/Checkbox.tsx";
 import { FormControl } from "./formInputs/FormControl.tsx";
 import { useToast } from "./toast/useToast.tsx";
-import { getFailureText } from "../library/failure-reason.ts";
-import { addStringToSetArray } from "../library/set-utils.ts";
 
 function SaveButton({ isLoading }: { isLoading: boolean }) {
   if (isLoading) {
@@ -61,7 +64,7 @@ export function RepoSecretsForm({
           return {
             secretName: "",
             secretValue: "",
-            events: [],
+            events: ["push", "tag", "deployment"],
             allowCommands: "true",
             allowedImages: [],
             _allowedImageName: "",
@@ -141,7 +144,8 @@ export function RepoSecretsForm({
     },
   });
 
-  const onSubmit: SubmitHandler<any> = (data) => {
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    console.log("form:", JSON.stringify(data, null, 2));
     addSecretMutation.mutate(data);
   };
 
@@ -151,6 +155,7 @@ export function RepoSecretsForm({
 
   return (
     <>
+      <Checkbox label={"hi"} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <PageTitle>Add Repo Secret</PageTitle>
         <div className="mb-4 mt-4 flex max-w-3xl items-center justify-between">
@@ -183,34 +188,49 @@ export function RepoSecretsForm({
                 exposure via a pull request against the repo. You can override
                 this behavior, at your own risk, for each secret.
               </Notice>
-              <div>
-                <CheckboxContainer>
-                  <Checkbox label="Push" {...register("events")} value="push" />
-                </CheckboxContainer>
-                <CheckboxContainer>
-                  <Checkbox
-                    label="Pull Request"
-                    {...register("events")}
-                    value="pull_request"
-                  />
-                </CheckboxContainer>
-                <CheckboxContainer>
-                  <Checkbox label="Tag" {...register("events")} value="tag" />
-                </CheckboxContainer>
-                <CheckboxContainer>
-                  <Checkbox
-                    label="Comment"
-                    {...register("events")}
-                    value="comment"
-                  />
-                </CheckboxContainer>
-                <CheckboxContainer>
-                  <Checkbox
-                    label="Deployment"
-                    {...register("events")}
-                    value="deployment"
-                  />
-                </CheckboxContainer>
+              <div className="space-y-2">
+                <Controller
+                  control={control}
+                  name="events"
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      // checked={field.value}
+                      onCheckedChange={(v) => {
+                        console.log(v);
+                        console.log(field);
+                        // @ts-ignore
+                        field.onChange(v);
+                        // setValue("events", v);
+                      }}
+                      onChange={(e) => {
+                        console.log(e);
+                      }}
+                      label="Push"
+                      value={field.value}
+                    />
+                  )}
+                />
+
+                <Checkbox
+                  label="Pull Request"
+                  {...register("events")}
+                  value="pull_request"
+                />
+
+                <Checkbox label="Tag" {...register("events")} value="tag" />
+
+                <Checkbox
+                  label="Comment"
+                  {...register("events")}
+                  value="comment"
+                />
+
+                <Checkbox
+                  label="Deployment"
+                  {...register("events")}
+                  value="deployment"
+                />
               </div>
 
               {/* Allowed Images */}

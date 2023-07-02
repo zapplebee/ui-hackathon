@@ -63,7 +63,7 @@ export class SecretsService {
     org: string,
     name: string,
     body: SecretPost // TODO actually fix the swagger docs so the generated code works
-  ): CancelablePromise<Secret> {
+  ): CancelablePromise<SecretCorrected> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/v1/secrets/{engine}/{type}/{org}/{name}",
@@ -131,8 +131,8 @@ export class SecretsService {
     org: string,
     name: string,
     secret: string,
-    body: Secret
-  ): CancelablePromise<Secret> {
+    body: SecretPost
+  ): CancelablePromise<SecretCorrected> {
     return __request(OpenAPI, {
       method: "PUT",
       url: "/api/v1/secrets/{engine}/{type}/{org}/{name}/{secret}",

@@ -18,27 +18,10 @@ import { PageTitle } from "./PageTitle.tsx";
 import { CheckboxContainer } from "./formInputs/CheckboxContainer.tsx";
 import { FormControl } from "./formInputs/FormControl.tsx";
 import { useToast } from "./toast/useToast.tsx";
+import { getFailureText } from "../library/failure-reason.ts";
+import { addStringToSetArray } from "../library/set-utils.ts";
 
-export interface RepoSecretsFormWidgetProps {
-  org: string;
-  repo: string;
-  secretName?: string;
-  mode: "edit" | "add" | "view";
-}
-
-function Spacer() {
-  return <div className="mb-2" />;
-}
-
-function Reverse({ children }: any) {
-  return (
-    <div className="flex flex-row-reverse items-center gap-4 [justify-content:start]">
-      {children}
-    </div>
-  );
-}
-
-function SaveButton({ isLoading }: any) {
+function SaveButton({ isLoading }: { isLoading: boolean }) {
   if (isLoading) {
     return (
       <div className="btn-primary flex justify-center align-middle opacity-30">
@@ -49,18 +32,42 @@ function SaveButton({ isLoading }: any) {
   return <input type="submit" className="btn-primary" value="Save" />;
 }
 
-export function RepoSecretsFormWidget({
+export interface RepoSecretsFormProps {
+  org: string;
+  repo: string;
+  secretName?: string;
+  mode: "edit" | "add" | "view";
+}
+
+interface FormValues {
+  secretName: string;
+  secretValue: string | null;
+  events: ("pull_request" | "push" | "tag" | "comment" | "deployment")[];
+  allowCommands: string;
+  allowedImages: { value: string }[];
+  _allowedImageName: string;
+}
+
+export function RepoSecretsForm({
   org,
   repo,
   secretName,
   mode,
-}: RepoSecretsFormWidgetProps) {
-  const { register, handleSubmit, getValues, setValue, control } = useForm<any>(
-    {
+}: RepoSecretsFormProps) {
+  const { register, handleSubmit, getValues, setValue, control } =
+    useForm<FormValues>({
       defaultValues: async () => {
         if (mode === "add") {
-          return {};
+          return {
+            secretName: "",
+            secretValue: "",
+            events: [],
+            allowCommands: "true",
+            allowedImages: [],
+            _allowedImageName: "",
+          };
         }
+
         const resp = (await SecretsService.getSecret(
           "native",
           "repo",
@@ -71,24 +78,25 @@ export function RepoSecretsFormWidget({
 
         return {
           secretName: resp.name,
+          secretValue: resp.value,
           events: resp.events,
           allowCommands: JSON.stringify(resp.allow_command),
-          allowedImages: resp.images,
+          allowedImages: resp.images.map((value) => ({ value })),
+          _allowedImageName: "",
         };
       },
-    }
-  );
+    });
 
-  const { fields, swap, remove } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormContext)
-    name: "allowedImages", // unique name for your Field Array
+  const { fields, remove } = useFieldArray({
+    name: "allowedImages",
+    control,
   });
 
   const SuccessToast = useToast();
   const FailedToast = useToast();
 
   const addSecretMutation = useMutation({
-    mutationFn: (data: any) => {
+    mutationFn: (data: FormValues) => {
       console.log("repo secrets add widget payload", JSON.stringify(data));
 
       const createSecretBody: SecretPost = {
@@ -101,7 +109,7 @@ export function RepoSecretsFormWidget({
         name: data.secretName,
         value:
           mode === "add" || data.secretValue !== "" ? data.secretValue : null,
-        images: data.allowedImages,
+        images: data.allowedImages.map(({ value }) => value),
       };
 
       if (mode === "add") {
@@ -120,11 +128,12 @@ export function RepoSecretsFormWidget({
         org,
         repo,
         secretName as string,
-        createSecretBody as any
+        createSecretBody
       );
     },
-    onError(error: any) {
-      console.log({ error });
+    onError() {
+      // todo: is there a better way to programmatically populate the error state
+      // for toasts if this happens? we can't pass in state here
       FailedToast.publish();
     },
     onSuccess() {
@@ -138,10 +147,7 @@ export function RepoSecretsFormWidget({
 
   const { isLoading, isSuccess, failureReason } = addSecretMutation;
 
-  const failureString =
-    ((failureReason && typeof failureReason?.body) === "string"
-      ? JSON.parse(failureReason?.body)?.error
-      : failureReason?.body?.error) ?? "Unknown Error";
+  const failureString = getFailureText(failureReason);
 
   return (
     <>
@@ -179,33 +185,29 @@ export function RepoSecretsFormWidget({
               </Notice>
               <div>
                 <CheckboxContainer>
-                  <Checkbox
-                    label="Push"
-                    {...register("events[]")}
-                    value="push"
-                  />
+                  <Checkbox label="Push" {...register("events")} value="push" />
                 </CheckboxContainer>
                 <CheckboxContainer>
                   <Checkbox
                     label="Pull Request"
-                    {...register("events[]")}
+                    {...register("events")}
                     value="pull_request"
                   />
                 </CheckboxContainer>
                 <CheckboxContainer>
-                  <Checkbox label="Tag" {...register("events[]")} value="tag" />
+                  <Checkbox label="Tag" {...register("events")} value="tag" />
                 </CheckboxContainer>
                 <CheckboxContainer>
                   <Checkbox
                     label="Comment"
-                    {...register("events[]")}
+                    {...register("events")}
                     value="comment"
                   />
                 </CheckboxContainer>
                 <CheckboxContainer>
                   <Checkbox
                     label="Deployment"
-                    {...register("events[]")}
+                    {...register("events")}
                     value="deployment"
                   />
                 </CheckboxContainer>
@@ -233,21 +235,13 @@ export function RepoSecretsFormWidget({
                     type="button"
                     className="text-sm"
                     onClick={() => {
-                      // todo: extract into handler?
                       const newValue = getValues("_allowedImageName").trim();
-
-                      if (newValue === "") {
-                        return;
-                      }
-
                       const existingValues = getValues("allowedImages");
-                      const set = [
-                        ...new Set([
-                          ...(existingValues ? existingValues : []),
-                          newValue,
-                        ]),
-                      ];
-                      setValue("allowedImages", set);
+                      const nextValues = addStringToSetArray(
+                        newValue,
+                        existingValues
+                      );
+                      setValue("allowedImages", nextValues);
                       setValue("_allowedImageName", "");
                     }}
                   >
@@ -265,7 +259,7 @@ export function RepoSecretsFormWidget({
                     <Input
                       label="Image Name"
                       disabled
-                      {...register(`allowedImages.${index}`)}
+                      {...register(`allowedImages.${index}.value` as const)}
                     />
 
                     <div>
@@ -281,6 +275,7 @@ export function RepoSecretsFormWidget({
                 ))}
               </div>
 
+              {/* Allow commands */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
                   <h3>Allow Commands</h3>
@@ -334,6 +329,7 @@ export function RepoSecretsFormWidget({
                 </div>
               </div>
 
+              {/* Need help? */}
               <div className="text-sm">
                 Need help?{" "}
                 <ExternalLink
@@ -343,6 +339,8 @@ export function RepoSecretsFormWidget({
                   Visit our docs!
                 </ExternalLink>
               </div>
+
+              {/* Save / back */}
               {isSuccess ? (
                 <Link
                   className="btn-primary"

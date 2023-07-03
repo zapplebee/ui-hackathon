@@ -20,7 +20,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           {...inputProps}
           ref={ref}
-          className="border-b-2 border-l-0 border-r-0 border-t-0 border-b-vela-cyan bg-transparent"
+          className="border-b-2 border-l-0 border-r-0 border-t-0 border-b-vela-cyan bg-transparent p-2 text-base"
           id={id}
         />
       </>

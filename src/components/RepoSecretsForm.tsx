@@ -1,5 +1,3 @@
-import * as RadioGroup from "@radix-ui/react-radio-group";
-
 import { Input } from "./formInputs/Input.tsx";
 import { Textarea } from "./formInputs/TextArea.tsx";
 
@@ -10,16 +8,16 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { SecretsService } from "../api/index.ts";
 import { SecretCorrected, SecretPost } from "../api/models/Secret.ts";
+import { getFailureText } from "../library/failure-reason.ts";
+import { addStringToSetArray } from "../library/set-utils.ts";
 import { ExternalLink } from "./ExternalLink.tsx";
 import { HelpText } from "./HelpText.tsx";
 import { Loader } from "./Loader.tsx";
 import { Notice } from "./Notice.tsx";
 import { PageTitle } from "./PageTitle.tsx";
-import { CheckboxContainer } from "./formInputs/CheckboxContainer.tsx";
 import { FormControl } from "./formInputs/FormControl.tsx";
+import { RadioButton } from "./formInputs/RadioButton.tsx";
 import { useToast } from "./toast/useToast.tsx";
-import { getFailureText } from "../library/failure-reason.ts";
-import { addStringToSetArray } from "../library/set-utils.ts";
 
 function SaveButton({ isLoading }: { isLoading: boolean }) {
   if (isLoading) {
@@ -78,7 +76,7 @@ export function RepoSecretsForm({
 
         return {
           secretName: resp.name,
-          secretValue: resp.value,
+          secretValue: "", // todo: in an edit request, it should be set to null?
           events: resp.events,
           allowCommands: JSON.stringify(resp.allow_command),
           allowedImages: resp.images.map((value) => ({ value })),
@@ -152,7 +150,7 @@ export function RepoSecretsForm({
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <PageTitle>Add Repo Secret</PageTitle>
+        <PageTitle>{mapModeToText(mode)} Repo Secret</PageTitle>
         <div className="mb-4 mt-4 flex max-w-3xl items-center justify-between">
           <div className="flex w-full items-center gap-4">
             <div className="flex w-full flex-col gap-4">
@@ -167,7 +165,15 @@ export function RepoSecretsForm({
 
               {/* Secret Value */}
               <FormControl>
-                <Textarea label="Value" {...register("secretValue")} />
+                <Textarea
+                  label="Value"
+                  {...register("secretValue")}
+                  placeholder={
+                    mode === "edit"
+                      ? "Secret Value (leave blank to make no change)"
+                      : "Secure Value"
+                  }
+                />
               </FormControl>
 
               {/* Events */}
@@ -183,34 +189,24 @@ export function RepoSecretsForm({
                 exposure via a pull request against the repo. You can override
                 this behavior, at your own risk, for each secret.
               </Notice>
-              <div>
-                <CheckboxContainer>
-                  <Checkbox label="Push" {...register("events")} value="push" />
-                </CheckboxContainer>
-                <CheckboxContainer>
-                  <Checkbox
-                    label="Pull Request"
-                    {...register("events")}
-                    value="pull_request"
-                  />
-                </CheckboxContainer>
-                <CheckboxContainer>
-                  <Checkbox label="Tag" {...register("events")} value="tag" />
-                </CheckboxContainer>
-                <CheckboxContainer>
-                  <Checkbox
-                    label="Comment"
-                    {...register("events")}
-                    value="comment"
-                  />
-                </CheckboxContainer>
-                <CheckboxContainer>
-                  <Checkbox
-                    label="Deployment"
-                    {...register("events")}
-                    value="deployment"
-                  />
-                </CheckboxContainer>
+              <div className="space-y-1">
+                <Checkbox label="Push" {...register("events")} value="push" />
+                <Checkbox
+                  label="Pull Request"
+                  {...register("events")}
+                  value="pull_request"
+                />
+                <Checkbox label="Tag" {...register("events")} value="tag" />
+                <Checkbox
+                  label="Comment"
+                  {...register("events")}
+                  value="comment"
+                />
+                <Checkbox
+                  label="Deployment"
+                  {...register("events")}
+                  value="deployment"
+                />
               </div>
 
               {/* Allowed Images */}
@@ -286,46 +282,17 @@ export function RepoSecretsForm({
                   </div>
                 </div>
 
-                <div>
-                  <RadioGroup.Root
-                    id="allow_commands"
-                    className="flex flex-col gap-2.5"
-                    defaultValue="true"
-                    aria-label="Allow commands"
-                  >
-                    <div className="flex items-center">
-                      <RadioGroup.Item
-                        className="h-[25px] w-[25px] rounded-full border-2 border-vela-cyan bg-vela-coal-dark"
-                        value="true"
-                        id="r1"
-                        {...register("allowCommands")}
-                      >
-                        <RadioGroup.Indicator className="relative flex h-full w-full items-center justify-center after:block after:h-[11px] after:w-[11px] after:rounded-[50%] after:bg-vela-cyan after:content-['']" />
-                      </RadioGroup.Item>
-                      <label
-                        className="pl-[15px] text-[15px] leading-none text-white"
-                        htmlFor="r1"
-                      >
-                        Yes
-                      </label>
-                    </div>
-                    <div className="flex items-center">
-                      <RadioGroup.Item
-                        className="h-[25px] w-[25px] rounded-full border-2 border-vela-cyan bg-vela-coal-dark"
-                        value="false"
-                        id="r2"
-                        {...register("allowCommands")}
-                      >
-                        <RadioGroup.Indicator className="relative flex h-full w-full items-center justify-center after:block after:h-[11px] after:w-[11px] after:rounded-[50%] after:bg-vela-cyan after:content-['']" />
-                      </RadioGroup.Item>
-                      <label
-                        className="pl-[15px] text-[15px] leading-none text-white"
-                        htmlFor="r2"
-                      >
-                        No
-                      </label>
-                    </div>
-                  </RadioGroup.Root>
+                <div className="space-y-1">
+                  <RadioButton
+                    label="Yes"
+                    value="true"
+                    {...register("allowCommands")}
+                  />
+                  <RadioButton
+                    label="No"
+                    value="false"
+                    {...register("allowCommands")}
+                  />
                 </div>
               </div>
 
@@ -363,4 +330,10 @@ export function RepoSecretsForm({
       </form>
     </>
   );
+}
+
+function mapModeToText(mode: RepoSecretsFormProps["mode"]) {
+  const map = { add: "Add", edit: "Edit", view: "View" };
+  const val = map[mode] ?? "Edit";
+  return val;
 }

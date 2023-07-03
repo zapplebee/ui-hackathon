@@ -20,7 +20,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         <textarea
           {...inputProps}
           ref={ref}
-          className="border-0 bg-vela-coal-dark font-mono"
+          className="border-0 bg-vela-coal-dark p-2 font-mono text-base"
           id={id}
         />
       </>

@@ -194,31 +194,43 @@ export function RepoSecretsForm({
                   name="events"
                   render={({ field }) => (
                     <Checkbox
-                      {...field}
-                      // checked={field.value}
-                      onCheckedChange={(v) => {
-                        console.log(v);
-                        console.log(field);
-                        // @ts-ignore
-                        field.onChange(v);
-                        // setValue("events", v);
-                      }}
-                      onChange={(e) => {
-                        console.log(e);
+                      checked={field.value?.includes("push")}
+                      onCheckedChange={(checked) => {
+                        return checked
+                          ? field.onChange([...field.value, "push"])
+                          : field.onChange(
+                              field.value?.filter((value) => value !== "push")
+                            );
                       }}
                       label="Push"
-                      value={field.value}
                     />
                   )}
                 />
+                {/* <Controller
+                  control={control}
+                  name="events"
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      // onCheckedChange={(v) => {
+                      //   console.log(v);
+                      //   console.log(field);
+                      // }}
 
-                <Checkbox
+                      label="Pull Request"
+                      name="events"
+                      value="pull_request"
+                    />
+                  )}
+                /> */}
+
+                {/* <Checkbox
                   label="Pull Request"
                   {...register("events")}
                   value="pull_request"
-                />
+                /> */}
 
-                <Checkbox label="Tag" {...register("events")} value="tag" />
+                {/* <Checkbox label="Tag" {...register("events")} value="tag" />
 
                 <Checkbox
                   label="Comment"
@@ -230,7 +242,7 @@ export function RepoSecretsForm({
                   label="Deployment"
                   {...register("events")}
                   value="deployment"
-                />
+                /> */}
               </div>
 
               {/* Allowed Images */}

@@ -14,16 +14,30 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     const id = useId();
     return (
       <>
-        <input
-          {...inputProps}
-          ref={ref}
-          type="checkbox"
-          className=" bg-vela-cyan checked:bg-vela-cyan focus-within:text-vela-cyan hover:bg-vela-cyan focus:bg-vela-cyan focus:text-vela-cyan"
-          id={id}
-        />
-        <Label.Root className="font-bold" htmlFor={id}>
-          {label}
-        </Label.Root>
+        <div className="flex items-center gap-2">
+          <input
+            {...inputProps}
+            className="peer relative mt-1 h-6 w-6 shrink-0 appearance-none border-2 border-transparent bg-vela-cyan checked:border-transparent checked:bg-vela-cyan disabled:cursor-not-allowed disabled:border-vela-gray disabled:bg-vela-coal"
+            type="checkbox"
+            id={id}
+            ref={ref}
+          />
+          <svg
+            className="pointer-events-none absolute mt-1 hidden h-6 w-6 stroke-vela-coal-dark p-0.5 outline-none peer-checked:block"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <Label.Root className="flex-1 font-bold" htmlFor={id}>
+            {label}
+          </Label.Root>
+        </div>
       </>
     );
   }

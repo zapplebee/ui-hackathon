@@ -5,10 +5,11 @@ import { Checkbox } from "./formInputs/Checkbox.tsx";
 
 import { useMutation } from "@tanstack/react-query";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SecretsService } from "../api/index.ts";
 import { SecretCorrected, SecretPost } from "../api/models/Secret.ts";
 import { getFailureText } from "../library/failure-reason.ts";
+import { getRepoSecretsEditRoute } from "../library/routes.ts";
 import { addStringToSetArray } from "../library/set-utils.ts";
 import { ExternalLink } from "./ExternalLink.tsx";
 import { HelpText } from "./HelpText.tsx";
@@ -52,6 +53,8 @@ export function RepoSecretsForm({
   secretName,
   mode,
 }: RepoSecretsFormProps) {
+  console.log({ org, repo, secretName, mode });
+  const navigate = useNavigate();
   const { register, handleSubmit, getValues, setValue, formState, control } =
     useForm<FormValues>({
       defaultValues: async () => {
@@ -59,7 +62,7 @@ export function RepoSecretsForm({
           return {
             secretName: "",
             secretValue: "",
-            events: [],
+            events: ["push", "tag", "deployment"],
             allowCommands: "true",
             allowedImages: [],
             _allowedImageName: "",
@@ -93,7 +96,7 @@ export function RepoSecretsForm({
   const SuccessToast = useToast();
   const FailedToast = useToast();
 
-  const addSecretMutation = useMutation({
+  const secretMutation = useMutation({
     mutationFn: (data: FormValues) => {
       console.log("repo secrets add widget payload", JSON.stringify(data));
 
@@ -135,15 +138,21 @@ export function RepoSecretsForm({
       FailedToast.publish();
     },
     onSuccess() {
+      if (mode === "add") {
+        navigate(
+          getRepoSecretsEditRoute(org, repo, `${getValues("secretName")}`),
+          { replace: true }
+        );
+      }
       SuccessToast.publish();
     },
   });
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    addSecretMutation.mutate(data);
+    secretMutation.mutate(data);
   };
 
-  const { isLoading, isSuccess, failureReason } = addSecretMutation;
+  const { isLoading, isSuccess, failureReason } = secretMutation;
 
   const failureString = getFailureText(failureReason);
 
@@ -316,16 +325,7 @@ export function RepoSecretsForm({
               </div>
 
               {/* Save / back */}
-              {isSuccess ? (
-                <Link
-                  className="btn-primary"
-                  to={`/${org}/${repo}/$/secrets/native}`}
-                >
-                  ← Back to Secrets
-                </Link>
-              ) : (
-                <SaveButton isLoading={isLoading} />
-              )}
+              <SaveButton isLoading={isLoading} />
 
               {/* toasts */}
               <SuccessToast.Component type="success" title="Success">

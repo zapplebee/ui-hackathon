@@ -6,6 +6,18 @@ export function getRepoSecretsRoute(org: string, repo: string) {
   return `/${org}/${repo}/$/secrets/native`;
 }
 
+export function getRepoSecretsAddRoute(org: string, repo: string) {
+  return `/${org}/${repo}/$/secrets/native/add`;
+}
+
+export function getRepoSecretsEditRoute(
+  org: string,
+  repo: string,
+  secretName: string
+) {
+  return `/${org}/${repo}/$/secrets/native/edit/${secretName}`;
+}
+
 export function getOrgSecretsRoute(org: string) {
   return `/${org}/$/secrets/native`;
 }

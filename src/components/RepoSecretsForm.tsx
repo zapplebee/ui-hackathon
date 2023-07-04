@@ -52,7 +52,7 @@ export function RepoSecretsForm({
   secretName,
   mode,
 }: RepoSecretsFormProps) {
-  const { register, handleSubmit, getValues, setValue, control } =
+  const { register, handleSubmit, getValues, setValue, formState, control } =
     useForm<FormValues>({
       defaultValues: async () => {
         if (mode === "add") {
@@ -69,7 +69,7 @@ export function RepoSecretsForm({
         const resp = (await SecretsService.getSecret(
           "native",
           "repo",
-          org!,
+          org,
           repo,
           secretName!
         )) as unknown as SecretCorrected;
@@ -139,13 +139,21 @@ export function RepoSecretsForm({
     },
   });
 
-  const onSubmit: SubmitHandler<any> = (data) => {
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
     addSecretMutation.mutate(data);
   };
 
   const { isLoading, isSuccess, failureReason } = addSecretMutation;
 
   const failureString = getFailureText(failureReason);
+
+  if (formState.isLoading) {
+    return (
+      <>
+        <Loader />
+      </>
+    );
+  }
 
   return (
     <>
@@ -220,7 +228,7 @@ export function RepoSecretsForm({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 pl-4">
+                <div className="flex items-center gap-4 pl-0 md:pl-4">
                   <div className="flex items-center gap-4">
                     <Input
                       label="Image name"
@@ -274,7 +282,7 @@ export function RepoSecretsForm({
               {/* Allow commands */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <h3>Allow Commands</h3>
+                  <h3 className="font-bold">Allow Commands</h3>
                   <div>
                     <HelpText>
                       ("No" will disable this secret in commands)
@@ -318,6 +326,8 @@ export function RepoSecretsForm({
               ) : (
                 <SaveButton isLoading={isLoading} />
               )}
+
+              {/* toasts */}
               <SuccessToast.Component type="success" title="Success">
                 Successfully saved your secret
               </SuccessToast.Component>

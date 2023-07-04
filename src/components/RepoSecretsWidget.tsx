@@ -5,6 +5,10 @@ import { IconCopy } from "./icons/IconCopy.tsx";
 import { IconPlus } from "./icons/IconPlus.tsx";
 import { Loader } from "./Loader";
 import { Table } from "./Table";
+import {
+  getRepoSecretsAddRoute,
+  getRepoSecretsEditRoute,
+} from "../library/routes.ts";
 
 export interface RepoSecretsWidgetProps {
   org: string;
@@ -49,7 +53,7 @@ export function RepoSecretsWidget({ org, repo }: RepoSecretsWidgetProps) {
           {repoSecretsQuery.isSuccess && !repoSecretsQuery.isError ? (
             <>
               <Link
-                to={`/${org}/${repo}/$/secrets/native/add`}
+                to={getRepoSecretsAddRoute(org, repo)}
                 className="btn-secondary flex items-center gap-2"
               >
                 Add Repo Secret
@@ -124,7 +128,7 @@ export function RepoSecretsWidget({ org, repo }: RepoSecretsWidgetProps) {
                         </td>
                         <td>
                           <Link
-                            to={`/${org}/${repo}/$/secrets/native/${secret.name}`}
+                            to={getRepoSecretsEditRoute(org, repo, secret.name)}
                           >
                             {secret.name}
                           </Link>

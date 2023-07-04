@@ -12,7 +12,7 @@ export function RepoSecretsEdit() {
   return (
     <>
       <Helmet>
-        <title>{`${mode.toLocaleUpperCase()} Native Secret - Secrets - ${org}/${repo} - Vela`}</title>
+        <title>{`${secretName} - Edit Native Secret - Secrets - ${org}/${repo} - Vela`}</title>
       </Helmet>
       <TopBumper />
       <div>

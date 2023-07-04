@@ -39,7 +39,9 @@ export function RepoDeployments() {
                 className="btn-secondary flex items-center gap-2"
               >
                 <span>Add Deployment</span>
-                <IconPlus />
+                <div className="h-6 w-6">
+                  <IconPlus />
+                </div>
               </Link>
             </div>
           ) : null}

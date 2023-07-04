@@ -209,7 +209,7 @@ const router = createBrowserRouter([
               },
               // TODO: if a secret is named `add` there is no way to view or edit it
               {
-                path: "/:org/:repo/$/secrets/:engine/:secretName",
+                path: "/:org/:repo/$/secrets/:engine/edit/:secretName",
                 element: <RepoSecretsEdit />,
               },
               {

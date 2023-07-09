@@ -50,7 +50,11 @@ export function BuildRow({
           to={`${buildBase}/${build.number}`}
           className="flex"
         >
-          <StatusIndicator status={build.status!} />
+          <StatusIndicator
+            status={
+              build.status as Parameters<typeof StatusIndicator>[0]["status"]
+            }
+          />
         </Link>
         <div className="flex min-w-0 flex-1 flex-col px-6 py-4" data-build-info>
           <div className="flex min-w-0 flex-row items-center justify-between">

@@ -7,6 +7,7 @@ import { TopBumper } from "../components/TopBumper";
 import { StatusIndicator } from "../components/StatusIndicator";
 import { ExternalLink } from "../components/ExternalLink";
 import { Searchbar } from "../components/Searchbar";
+import { BuildFilterBar } from "../components/BuildFilterBar";
 
 /**
  * The purpose of the kitchen is to display generic non-connected versions of
@@ -116,6 +117,14 @@ export function Kitchen() {
 
           <div>
             <Searchbar placeholder="search" />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <h3 className="font-bold">Build Filter Bar</h3>
+
+          <div>
+            <BuildFilterBar />
           </div>
         </div>
       </div>

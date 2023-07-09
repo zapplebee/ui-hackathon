@@ -25,19 +25,7 @@ export const RadioButton = React.forwardRef<HTMLInputElement, RadioButtonProps>(
             />
             <div className="pointer-events-none absolute hidden h-3 w-3 rounded-full bg-vela-cyan outline-none peer-checked:block"></div>
           </div>
-          {/* <div className="absolute flex h-full w-full items-center justify-center after:block after:h-[11px] after:w-[11px] after:rounded-[50%] after:bg-vela-cyan after:content-['']"></div> */}
-          {/* <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg> */}
-          <Label.Root className="flex-1 font-bold" htmlFor={id}>
+          <Label.Root className="flex-1" htmlFor={id}>
             {label}
           </Label.Root>
         </div>

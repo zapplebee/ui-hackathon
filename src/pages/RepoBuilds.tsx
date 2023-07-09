@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BuildRow } from "../components/BuildRow";
 import { Loader } from "../components/Loader";
 import { Pager } from "../components/Pager";
@@ -6,13 +6,46 @@ import { useBuildsQuery } from "../library/hooks/useBuilds";
 import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
 import { usePageParam } from "../library/hooks/usePageParam";
 import { TopBumper } from "../components/TopBumper";
+import {
+  BuildFilterBar,
+  type BuildFilterBarChange,
+} from "../components/BuildFilterBar";
+import { useQuery } from "@tanstack/react-query";
+import { BuildsService } from "../api";
+import { REFETCH_INTERVAL } from "../library/constants";
 
 export function RepoBuilds() {
   const { org, repo } = useOrgRepoParams();
   const { page } = usePageParam();
 
-  const { builds } = useBuildsQuery(org!, repo!, page);
-  // todo: sorting/filtering
+  const [event, setEvent] = useState<string | undefined>(undefined);
+
+  const builds = useQuery({
+    queryKey: ["builds", org, repo, page],
+    queryFn: () =>
+      BuildsService.getBuilds(
+        org!,
+        repo!,
+        // override
+        event as Parameters<typeof BuildsService.getBuilds>["2"],
+        undefined,
+        undefined,
+        undefined,
+        page,
+        undefined
+      ),
+    // todo: would like to throttle this when its not busy
+    refetchInterval: REFETCH_INTERVAL,
+  });
+
+  function handleFilter(value: BuildFilterBarChange) {
+    let event = value.event || undefined; // ideal for the fallback
+    if (event === "all") {
+      event = undefined; // all requires undefined
+    }
+    setEvent(event);
+    console.log("event change handled event=", event);
+  }
 
   return (
     <>
@@ -28,12 +61,17 @@ export function RepoBuilds() {
                 <h2 className="text-3xl font-bold">Builds</h2>
                 {builds.isLoading ? <Loader /> : null}
               </div>
-              {builds.isSuccess && builds.data.length > 0 ? (
+            </div>
+            {builds.isSuccess && builds.data.length > 0 ? (
+              <div className="mb-4 flex flex-col gap-4">
+                <div>
+                  <BuildFilterBar onChange={handleFilter} />
+                </div>
                 <div>
                   <Pager path={`/${org}/${repo}`} page={page} />
                 </div>
-              ) : null}
-            </div>
+              </div>
+            ) : null}
 
             <div className="flex flex-col gap-4">
               {builds.isSuccess && builds.data.length > 0 ? (

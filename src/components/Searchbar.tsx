@@ -2,7 +2,7 @@ import React from "react";
 
 interface SearchbarProps {
   placeholder: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   right?: React.ReactNode;
 }
 export function Searchbar(props: SearchbarProps) {
@@ -11,7 +11,8 @@ export function Searchbar(props: SearchbarProps) {
       <div className="flex items-center gap-4">
         <div className="relative flex-1">
           <svg
-            className="absolute top-2"
+            // todo: extract this icon
+            className="absolute"
             fill="none"
             height="24"
             width="24"

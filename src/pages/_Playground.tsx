@@ -1,36 +1,24 @@
-import { useToast } from "../components/toast/useToast";
+import { Helmet } from "react-helmet-async";
+import { PageTitle } from "../components/PageTitle";
+import { TopBumper } from "../components/TopBumper";
 
+/**
+ * The purpose of the playground is to try new components before they are finalized
+ * and often put into the `./Kitchen`.
+ *
+ * @see ./Kitchen.tsx
+ */
 export function Playground() {
-  const Toast = useToast();
-  const Toast2 = useToast();
-
   return (
     <>
-      <div className="flex gap-4 p-4">
-        <button
-          className="btn-primary"
-          onClick={() => {
-            Toast.publish();
-          }}
-        >
-          Save
-        </button>
-        <button
-          className="btn-primary"
-          onClick={() => {
-            Toast2.publish();
-          }}
-        >
-          Save
-        </button>
+      <Helmet>
+        <title>{`Playground - Vela`}</title>
+      </Helmet>
+      <TopBumper />
+      <div className="space-y-4">
+        <PageTitle>Playground</PageTitle>
+        <div>{/* play here */}</div>
       </div>
-
-      <Toast.Component title={<h2>Saved</h2>} type="success">
-        Saved successfully!
-      </Toast.Component>
-      <Toast2.Component title={<h2>Saved</h2>} type="error">
-        Info
-      </Toast2.Component>
     </>
   );
 }

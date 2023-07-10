@@ -13,6 +13,8 @@ export function BuildFilterBar() {
   useEffect(() => {
     if (event) {
       setEventFilter(event);
+    } else {
+      setEventFilter("all");
     }
   }, [event]);
 

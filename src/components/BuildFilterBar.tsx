@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useEventParam } from "../library/hooks/useEventParam";
 import { RadioButton } from "./formInputs/RadioButton";
+import { Checkbox } from "./formInputs/Checkbox";
 
 export function BuildFilterBar() {
   const [eventFilter, setEventFilter] = useState<string>("all");
@@ -30,8 +31,8 @@ export function BuildFilterBar() {
 
   return (
     <>
-      <div className="flex justify-between bg-vela-coal-dark p-4 text-base">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between bg-vela-coal-dark p-4 text-base">
+        <div className="flex flex-col flex-wrap justify-start gap-x-4 gap-y-4 md:flex-row md:items-center md:justify-normal md:gap-y-2">
           <div>Filter by event:</div>
           <RadioButton
             label="All"
@@ -83,10 +84,10 @@ export function BuildFilterBar() {
             aria-label="filter to show deployment events"
           />
         </div>
-        {/* todo: timestamp */}
-        {/* <div>
+
+        <div>
           <Checkbox label="Show full timestamps" />
-        </div> */}
+        </div>
       </div>
     </>
   );

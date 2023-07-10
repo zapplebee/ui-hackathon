@@ -1,33 +1,29 @@
-import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
+import { BuildsService } from "../api";
+import { BuildFilterBar } from "../components/BuildFilterBar";
 import { BuildRow } from "../components/BuildRow";
 import { Loader } from "../components/Loader";
 import { Pager } from "../components/Pager";
-import { useBuildsQuery } from "../library/hooks/useBuilds";
+import { TopBumper } from "../components/TopBumper";
+import { REFETCH_INTERVAL } from "../library/constants";
 import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
 import { usePageParam } from "../library/hooks/usePageParam";
-import { TopBumper } from "../components/TopBumper";
-import {
-  BuildFilterBar,
-  type BuildFilterBarChange,
-} from "../components/BuildFilterBar";
-import { useQuery } from "@tanstack/react-query";
-import { BuildsService } from "../api";
-import { REFETCH_INTERVAL } from "../library/constants";
+
+import { useEventParam } from "../library/hooks/useEventParam";
 
 export function RepoBuilds() {
   const { org, repo } = useOrgRepoParams();
   const { page } = usePageParam();
-
-  const [event, setEvent] = useState<string | undefined>(undefined);
+  const { event } = useEventParam();
 
   const builds = useQuery({
-    queryKey: ["builds", org, repo, page],
+    queryKey: ["builds", org, repo, page, event],
     queryFn: () =>
       BuildsService.getBuilds(
         org!,
         repo!,
-        // override
-        event as Parameters<typeof BuildsService.getBuilds>["2"],
+        event as Parameters<typeof BuildsService.getBuilds>["2"], // override
         undefined,
         undefined,
         undefined,
@@ -37,15 +33,6 @@ export function RepoBuilds() {
     // todo: would like to throttle this when its not busy
     refetchInterval: REFETCH_INTERVAL,
   });
-
-  function handleFilter(value: BuildFilterBarChange) {
-    let event = value.event || undefined; // ideal for the fallback
-    if (event === "all") {
-      event = undefined; // all requires undefined
-    }
-    setEvent(event);
-    console.log("event change handled event=", event);
-  }
 
   return (
     <>
@@ -65,7 +52,7 @@ export function RepoBuilds() {
             {builds.isSuccess && builds.data.length > 0 ? (
               <div className="mb-4 flex flex-col gap-4">
                 <div>
-                  <BuildFilterBar onChange={handleFilter} />
+                  <BuildFilterBar />
                 </div>
                 <div>
                   <Pager path={`/${org}/${repo}`} page={page} />

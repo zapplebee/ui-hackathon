@@ -1,36 +1,30 @@
-import { useForm } from "react-hook-form";
-import { Checkbox } from "./formInputs/Checkbox";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { useEventParam } from "../library/hooks/useEventParam";
 import { RadioButton } from "./formInputs/RadioButton";
-import { useEffect } from "react";
 
-export interface BuildFilterBarProps {
-  onChange?: (values: BuildFilterBarChange) => void;
-}
+export function BuildFilterBar() {
+  const [eventFilter, setEventFilter] = useState<string>("all");
 
-interface FormValues {
-  event: string;
-  timestamp: boolean;
-}
+  const { event } = useEventParam();
 
-export type BuildFilterBarChange = Partial<FormValues>;
-
-export function BuildFilterBar({ onChange }: BuildFilterBarProps) {
-  const { register, watch } = useForm<FormValues>({
-    defaultValues: {
-      event: "all",
-      timestamp: false,
-    },
-  });
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const subscription = watch((value) => {
-      if (onChange) {
-        onChange(value);
-      }
-    });
+    if (event) {
+      setEventFilter(event);
+    }
+  }, [event]);
 
-    return () => subscription.unsubscribe();
-  }, [onChange, watch]);
+  function handleEventFilter(e: React.ChangeEvent<HTMLInputElement>) {
+    const event = e.currentTarget.value;
+
+    if (event === "all") {
+      navigate({ search: `` });
+    } else {
+      navigate({ search: `event=${event}` });
+    }
+  }
 
   return (
     <>
@@ -40,43 +34,57 @@ export function BuildFilterBar({ onChange }: BuildFilterBarProps) {
           <RadioButton
             label="All"
             value="all"
-            {...register("event")}
+            checked={eventFilter === "all"}
+            name="build-filter-bar-event"
+            onChange={handleEventFilter}
             aria-label="filter to show all events"
           />
           <RadioButton
             label="Push"
             value="push"
-            {...register("event")}
+            checked={eventFilter === "push"}
+            name="build-filter-bar-event"
+            onChange={handleEventFilter}
             aria-label="filter to show push events"
           />
           <RadioButton
             label="Pull Request"
             value="pull_request"
-            {...register("event")}
+            checked={eventFilter === "pull_request"}
+            name="build-filter-bar-event"
+            onChange={handleEventFilter}
             aria-label="filter to show pull request events"
           />
           <RadioButton
             label="Tag"
             value="tag"
-            {...register("event")}
+            checked={eventFilter === "tag"}
+            name="build-filter-bar-event"
+            onChange={handleEventFilter}
             aria-label="filter to show tag events"
           />
           <RadioButton
             label="Comment"
             value="comment"
-            {...register("event")}
+            checked={eventFilter === "comment"}
+            name="build-filter-bar-event"
+            onChange={handleEventFilter}
+            // {...register("event")}
             aria-label="filter to show comment events"
           />
           <RadioButton
             label="Deployment"
             value="deployment"
-            {...register("event")}
+            checked={eventFilter === "deployment"}
+            name="build-filter-bar-event"
+            onChange={handleEventFilter}
             aria-label="filter to show deployment events"
           />
         </div>
-        <div>
-          <Checkbox {...register("timestamp")} label="Show full timestamps" />
-        </div>
+        {/* todo: timestamp */}
+        {/* <div>
+          <Checkbox label="Show full timestamps" />
+        </div> */}
       </div>
     </>
   );

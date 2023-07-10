@@ -6,6 +6,8 @@ import { useBuildsQuery } from "../library/hooks/useBuilds";
 import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
 import { usePageParam } from "../library/hooks/usePageParam";
 import { TopBumper } from "../components/TopBumper";
+import { getHeaders, getLink, getPagination } from "../library/headers";
+import { Pager2 } from "../components/Pager2";
 
 export function RepoBuilds() {
   const { org, repo } = useOrgRepoParams();
@@ -13,6 +15,8 @@ export function RepoBuilds() {
 
   const { builds } = useBuildsQuery(org!, repo!, page);
   // todo: sorting/filtering
+
+  const pagination = getPagination(getLink(getHeaders(builds.data)));
 
   return (
     <>
@@ -30,7 +34,11 @@ export function RepoBuilds() {
               </div>
               {builds.isSuccess && builds.data.length > 0 ? (
                 <div>
-                  <Pager path={`/${org}/${repo}`} page={page} />
+                  <Pager2
+                    path={`/${org}/${repo}`}
+                    page={page}
+                    pagination={pagination}
+                  />
                 </div>
               ) : null}
             </div>

@@ -4,13 +4,7 @@ import invariant from "tiny-invariant";
 export function useRepoParam() {
   const { repo } = useParams();
 
-  if (!repo) {
-    if ("production" !== process.env.NODE_ENV) {
-      invariant(false, "repo param missing");
-    } else {
-      invariant(false);
-    }
-  }
+  invariant(!!repo, "repo param missing");
 
   return repo;
 }

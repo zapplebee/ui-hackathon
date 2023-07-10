@@ -2,16 +2,19 @@ import React from "react";
 import { BuildRow } from "../components/BuildRow";
 import { Loader } from "../components/Loader";
 import { Pager } from "../components/Pager";
-import { useBuildsQuery } from "../library/hooks/useBuilds";
-import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
-import { usePageParam } from "../library/hooks/usePageParam";
 import { TopBumper } from "../components/TopBumper";
+import { useBuildsQuery } from "../library/hooks/useBuilds";
+import { useOrgParam } from "../library/hooks/useOrgParam";
+import { usePageParam } from "../library/hooks/usePageParam";
+import { useRepoParam } from "../library/hooks/useRepoParam";
 
 export function RepoBuilds() {
-  const { org, repo } = useOrgRepoParams();
+  const org = useOrgParam();
+  const repo = useRepoParam();
+
   const { page } = usePageParam();
 
-  const { builds } = useBuildsQuery(org!, repo!, page);
+  const { builds } = useBuildsQuery(org, repo, page);
   // todo: sorting/filtering
 
   return (

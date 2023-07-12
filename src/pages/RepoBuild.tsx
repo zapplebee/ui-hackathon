@@ -126,6 +126,37 @@ export function RepoBuild() {
         {build.isSuccess ? (
           <title>{`#${build.data.number} - ${org}/${repo} - Vela`}</title>
         ) : null}
+        {build.isSuccess && build.data.status === "success" ? (
+          <link
+            rel="icon"
+            type="image/ico"
+            href="/favicons/favicon-success.ico"
+          />
+        ) : null}
+        {build.isSuccess && build.data.status === "pending" ? (
+          <link
+            rel="icon"
+            type="image/ico"
+            href="/favicons/favicon-pending.ico"
+          />
+        ) : null}
+        {build.isSuccess && build.data.status === "running" ? (
+          <link
+            rel="icon"
+            type="image/ico"
+            href="/favicons/favicon-running.ico"
+          />
+        ) : null}
+        {build.isSuccess &&
+        ["failure", "error", "killed", "canceled"].includes(
+          build.data.status ?? ""
+        ) ? (
+          <link
+            rel="icon"
+            type="image/ico"
+            href="/favicons/favicon-failure.ico"
+          />
+        ) : null}
       </Helmet>
       <TopBumper />
       <div>

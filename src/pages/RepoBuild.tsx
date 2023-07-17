@@ -16,7 +16,7 @@ import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
 import ansiHTML from "ansi-html-community";
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { IconDownArrow } from "../components/icons/IconDownArrow.tsx";
 import { IconFailure } from "../components/icons/IconFailure.tsx";
 import { IconKilled } from "../components/icons/IconKilled.tsx";
@@ -28,8 +28,11 @@ import { IconSuccess } from "../components/icons/IconSuccess.tsx";
 import { IconUpArrow } from "../components/icons/IconUpArrow.tsx";
 import { TimeTicker2 } from "../components/TimeTicker2";
 import { REFETCH_INTERVAL } from "../library/constants";
+import { replaceFavicon } from "../library/favicon.ts";
 
 export function RepoBuild() {
+  const location = useLocation();
+
   const { org, repo } = useOrgRepoParams();
   const { buildNumber } = useBuildNumberParam();
 
@@ -111,6 +114,23 @@ export function RepoBuild() {
   // todo
   // consider fetching the logs for steps at the top level here instead
 
+  useEffect(() => {
+    if (build.isSuccess && build.data.status === "success") {
+      replaceFavicon("/favicons/favicon-success.ico");
+    } else if (build.isSuccess && build.data.status === "pending") {
+      replaceFavicon("/favicons/favicon-pending.ico");
+    } else if (build.isSuccess && build.data.status === "running") {
+      replaceFavicon("/favicons/favicon-running.ico");
+    } else if (
+      build.isSuccess &&
+      ["failure", "error", "killed", "canceled"].includes(
+        build.data.status ?? ""
+      )
+    ) {
+      replaceFavicon("/favicons/favicon-failure.ico");
+    }
+  }, [build.isSuccess, build?.data?.status, location.key]);
+
   if (builds.isLoading || build.isLoading || steps.isLoading) {
     return (
       <>
@@ -125,37 +145,6 @@ export function RepoBuild() {
       <Helmet>
         {build.isSuccess ? (
           <title>{`#${build.data.number} - ${org}/${repo} - Vela`}</title>
-        ) : null}
-        {build.isSuccess && build.data.status === "success" ? (
-          <link
-            rel="icon"
-            type="image/ico"
-            href="/favicons/favicon-success.ico"
-          />
-        ) : null}
-        {build.isSuccess && build.data.status === "pending" ? (
-          <link
-            rel="icon"
-            type="image/ico"
-            href="/favicons/favicon-pending.ico"
-          />
-        ) : null}
-        {build.isSuccess && build.data.status === "running" ? (
-          <link
-            rel="icon"
-            type="image/ico"
-            href="/favicons/favicon-running.ico"
-          />
-        ) : null}
-        {build.isSuccess &&
-        ["failure", "error", "killed", "canceled"].includes(
-          build.data.status ?? ""
-        ) ? (
-          <link
-            rel="icon"
-            type="image/ico"
-            href="/favicons/favicon-failure.ico"
-          />
         ) : null}
       </Helmet>
       <TopBumper />

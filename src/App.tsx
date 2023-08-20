@@ -43,6 +43,7 @@ import { RepoSettings } from "./pages/RepoSettings";
 import { Playground } from "./pages/_Playground";
 import { RepoSecretsAdd } from "./pages/RepoSecretsAdd";
 import { RepoSecretsEdit } from "./pages/RepoSecretsEdit";
+import { Kitchen } from "./pages/_Kitchen";
 
 const queryClient = new QueryClient();
 
@@ -328,6 +329,10 @@ const router = createBrowserRouter([
       {
         path: "/$/playground",
         element: <Playground />,
+      },
+      {
+        path: "/$/kitchen",
+        element: <Kitchen />,
       },
       {
         path: "/*",

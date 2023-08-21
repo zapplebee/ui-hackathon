@@ -35,6 +35,7 @@ import { OrgSecrets } from "./pages/OrgSecrets";
 import { OrgSharedSecrets } from "./pages/OrgSharedSecrets";
 import { RepoAudit } from "./pages/RepoAudit";
 import { RepoBuild } from "./pages/RepoBuild";
+import { RepoBuildServices } from "./pages/RepoBuildServices";
 import { RepoBuildSteps } from "./pages/RepoBuildSteps";
 import { RepoBuilds } from "./pages/RepoBuilds";
 import { RepoDeployments } from "./pages/RepoDeployments";
@@ -167,7 +168,7 @@ const router = createBrowserRouter([
                   },
                   {
                     path: "/:org/:repo/:number/services",
-                    element: <ComingSoon title="Services" />,
+                    element: <RepoBuildServices />,
                   },
                   {
                     path: "/:org/:repo/:number/pipeline",

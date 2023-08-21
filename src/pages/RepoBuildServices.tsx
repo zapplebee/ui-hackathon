@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import ansiHTML from "ansi-html-community";
 import classNames from "classnames";
 import { Base64 } from "js-base64";
 import { useEffect, useRef, useState } from "react";
@@ -8,6 +7,7 @@ import { Build, BuildsService, Service, ServicesService } from "../api";
 import { Details } from "../components/Details";
 import { DetailsPanel } from "../components/DetailsPanel";
 import { Loader } from "../components/Loader";
+import { LogsDisplay, LogsDisplayMethods } from "../components/LogsDisplay";
 import { TimeTicker2 } from "../components/TimeTicker2";
 import { IconDownArrow } from "../components/icons/IconDownArrow";
 import { IconFailure } from "../components/icons/IconFailure";
@@ -131,15 +131,15 @@ function ServiceRow({ service, org, repo, build }: ServiceRowProps) {
             <>
               <div className="border-b border-vela-coal-light">
                 <DetailsPanel>
-                  <div className="flex justify-end ">
+                  <div className="flex justify-end">
                     <a href="#" className="text-sm">
                       download step logs
                     </a>
                   </div>
                 </DetailsPanel>
               </div>
-              {/* todo: reconcile this custom use and the general case not details panel because it has special padding that is handled by the child */}
-              <div className="bg-vela-coal-dark">
+
+              <DetailsPanel padded={false}>
                 <div className="text-sm">
                   <Logs
                     org={org!}
@@ -148,7 +148,7 @@ function ServiceRow({ service, org, repo, build }: ServiceRowProps) {
                     service={service}
                   />
                 </div>
-              </div>
+              </DetailsPanel>
             </>
           ) : null}
         </Details>
@@ -157,6 +157,7 @@ function ServiceRow({ service, org, repo, build }: ServiceRowProps) {
   );
 }
 
+// TODO: this is copied/shared with step logs
 interface LogsProps {
   org: string;
   repo: string;
@@ -169,14 +170,13 @@ function Logs(props: LogsProps) {
 
   const [following, setFollowing] = useState(false);
 
-  const topRef = useRef<HTMLAnchorElement>(null);
-  const bottomRef = useRef<HTMLAnchorElement>(null);
+  const logDisplayRef = useRef<LogsDisplayMethods>(null);
 
   // todo: is it ok to assume finished is always set?
   const shouldRefresh = service.finished === 0 ? REFETCH_INTERVAL : false;
 
   const logs = useQuery({
-    queryKey: ["logs", org, repo, build.number, service.number],
+    queryKey: ["logs-service", org, repo, build.number, service.number],
     queryFn: () =>
       ServicesService.getServiceLogs(org, repo, build.number!, service.number!),
     refetchInterval: shouldRefresh,
@@ -188,16 +188,16 @@ function Logs(props: LogsProps) {
   // first thought: use a custom window event, as its the easiest option
   useEffect(() => {
     if (logs.data && following) {
-      bottomRef.current?.blur();
-      bottomRef.current?.focus();
+      logDisplayRef.current?.bottomRef.current?.blur();
+      logDisplayRef.current?.bottomRef.current?.focus();
     }
 
     // if we were following the logs and its step is finished
     // let's bump down the scroll one last time
     // and turn off following
     if (following && service.status === "finished") {
-      bottomRef.current?.blur();
-      bottomRef.current?.focus();
+      logDisplayRef.current?.bottomRef.current?.blur();
+      logDisplayRef.current?.bottomRef.current?.focus();
       setFollowing(false);
     }
   }, [following, logs.data, service.id, service.status]);
@@ -239,8 +239,8 @@ function Logs(props: LogsProps) {
                 title="jump to top"
                 onClick={(e) => {
                   e.preventDefault();
-                  topRef.current?.blur();
-                  topRef.current?.focus();
+                  logDisplayRef.current?.topRef.current?.blur();
+                  logDisplayRef.current?.topRef.current?.focus();
                 }}
               >
                 <IconUpArrow />
@@ -250,8 +250,8 @@ function Logs(props: LogsProps) {
                 title="jump to bottom"
                 onClick={(e) => {
                   e.preventDefault();
-                  bottomRef.current?.blur();
-                  bottomRef.current?.focus();
+                  logDisplayRef.current?.bottomRef.current?.blur();
+                  logDisplayRef.current?.bottomRef.current?.focus();
                 }}
               >
                 <IconDownArrow />
@@ -271,133 +271,16 @@ function Logs(props: LogsProps) {
             </div>
           </div>
 
-          <div className="__vela-scrollbar block max-h-[80vh] min-h-[10rem] resize-y overflow-y-auto pb-8 pt-4">
-            <table className="w-full table-fixed">
-              <thead className="hidden">
-                <tr>
-                  <th>Line Number</th>
-                  <th>Line Content</th>
-                </tr>
-              </thead>
-              <tbody className="w-full">
-                <tr className="w-full opacity-0" data-step-top>
-                  <td>
-                    <a
-                      ref={topRef}
-                      id={`step-${service.id}-top`}
-                      tabIndex={-1}
-                    ></a>
-                  </td>
-                </tr>
-                {nlogs.map((log, index) => {
-                  return (
-                    <tr
-                      key={`${service.number}:${index}`}
-                      id={`${service.number}:${index}`}
-                      className="flex w-full items-start hover:bg-vela-coal"
-                    >
-                      <td>
-                        {/* why is this a button? well apparently you can highlight a range now in vela */}
-                        {/* todo: make button add #step:line to the url */}
-                        <button className="relative w-[6ch] select-none overflow-hidden text-ellipsis whitespace-nowrap text-right font-mono text-vela-cyan no-underline hover:underline">
-                          <span>{index + 1}</span>
-                        </button>
-                      </td>
-                      <td className="mr-4 w-full flex-1 overflow-auto pl-4">
-                        <code>
-                          <pre
-                            className="whitespace-pre-wrap [word-break:break-word] [word-wrap:break-word]"
-                            // this looks quite different than the elm version
-                            // so we'll need to think about different options
-                            // 😸 pre with css wrap works though
-                            dangerouslySetInnerHTML={{
-                              __html: ansiHTML(linkify(log)),
-                            }}
-                          />
-                        </code>
-                      </td>
-                    </tr>
-                  );
-                })}
-                <LoadingTr
-                  active={service.finished === 0}
-                  fetching={logs.isFetching}
-                />
-                <tr className="w-full opacity-0" data-step-bottom>
-                  <td>
-                    <a
-                      ref={bottomRef}
-                      id={`step-${service.id}-bottom`}
-                      tabIndex={-1}
-                      href="#"
-                    ></a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <LogsDisplay
+            ref={logDisplayRef}
+            id={`service-${service.id}`}
+            number={service.number}
+            active={service.finished === 0}
+            fetching={logs.isFetched}
+            logs={nlogs}
+          />
         </div>
       ) : null}
     </>
-  );
-}
-
-/**
- * Linkify. A very basic regex based function to parse a string input with
- * raw http/https urls and convert them into html anchor tagged links.
- *
- * @todo
- * We would probably provide a configuration setting to turn this on or off.
- *
- * @param text
- * @returns text with anchor tagged link
- */
-function linkify(text: string) {
-  const regex = /((http|https):\/\/[^\s]+)/g;
-
-  const replacedText = text.replace(regex, (url) => {
-    return `<a target="_blank" rel="noopener noreferrer" href="${url}">${url}</a>`;
-  });
-
-  return replacedText;
-}
-
-interface LoadingTrProps {
-  active: boolean;
-  fetching: boolean;
-}
-
-/**
- * Displays loading dots and an animation whenever new logs are fetched.
- * @param param0
- * @returns
- */
-function LoadingTr({ active, fetching }: LoadingTrProps) {
-  const cls = classNames("flex w-full items-start transition-all", {
-    visible: active,
-    invisible: !active,
-  });
-  const cls2 = classNames(
-    "relative block w-[6ch] select-none overflow-hidden whitespace-nowrap text-right font-mono no-underline transition-all duration-500",
-    {
-      "translate-x-0": !fetching,
-      "translate-x-2": fetching,
-    },
-  );
-
-  return (
-    <tr className={cls} aria-hidden>
-      <td>
-        <span className={cls2}>
-          <span className="animate-pulse [animation-delay:0ms]">&middot;</span>
-          <span className="animate-pulse [animation-delay:250ms]">
-            &middot;
-          </span>
-          <span className="animate-pulse [animation-delay:500ms]">
-            &middot;
-          </span>
-        </span>
-      </td>
-    </tr>
   );
 }

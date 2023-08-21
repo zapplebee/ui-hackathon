@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { BuildFilterBar } from "../components/BuildFilterBar";
 import { Details } from "../components/Details";
 import { DetailsPanel } from "../components/DetailsPanel";
 import { ExternalLink } from "../components/ExternalLink";
@@ -140,6 +141,14 @@ export function Kitchen() {
 
           <div>
             <Searchbar placeholder="search" />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <h3 className="font-bold">Build Filter Bar</h3>
+
+          <div>
+            <BuildFilterBar />
           </div>
         </div>
       </div>

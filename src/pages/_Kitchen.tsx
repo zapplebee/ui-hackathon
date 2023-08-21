@@ -76,7 +76,16 @@ export function Kitchen() {
           <h3 className="font-bold">Details</h3>
 
           <Details summary={<>Generic label</>}>
-            <DetailsPanel>Generic details panel content</DetailsPanel>
+            <DetailsPanel>
+              <div className="space-y-4">
+                <p>Generic details panel content</p>
+                <hr />
+                <div className="space-x-2">
+                  <Button>Save</Button>
+                  <Button intent="underlined">Cancel</Button>
+                </div>
+              </div>
+            </DetailsPanel>
           </Details>
 
           <Details summary={<>Open by default</>} open={true}>

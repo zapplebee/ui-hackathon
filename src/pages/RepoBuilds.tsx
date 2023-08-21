@@ -7,13 +7,15 @@ import { Loader } from "../components/Loader";
 import { Pager } from "../components/Pager";
 import { TopBumper } from "../components/TopBumper";
 import { REFETCH_INTERVAL } from "../library/constants";
-import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
-import { usePageParam } from "../library/hooks/usePageParam";
-
 import { useEventParam } from "../library/hooks/useEventParam";
+import { useOrgParam } from "../library/hooks/useOrgParam";
+import { usePageParam } from "../library/hooks/usePageParam";
+import { useRepoParam } from "../library/hooks/useRepoParam";
 
 export function RepoBuilds() {
-  const { org, repo } = useOrgRepoParams();
+  const org = useOrgParam();
+  const repo = useRepoParam();
+
   const { page } = usePageParam();
   const { event } = useEventParam();
 

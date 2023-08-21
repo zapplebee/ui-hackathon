@@ -1,14 +1,13 @@
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import { Details } from "../components/Details";
 import { DetailsPanel } from "../components/DetailsPanel";
 import { ExternalLink } from "../components/ExternalLink";
 import { PageTitle } from "../components/PageTitle";
+import { Searchbar } from "../components/Searchbar";
 import { StatusIndicator } from "../components/StatusIndicator";
 import { TopBumper } from "../components/TopBumper";
 import { Button } from "../components/button/Button";
-import { Link } from "react-router-dom";
-
-// import { Searchbar } from "../components/Searchbar";
 
 /**
  * The purpose of the kitchen is to display generic non-connected versions of
@@ -139,9 +138,9 @@ export function Kitchen() {
         <div className="flex w-1/2 flex-col gap-4">
           <h3 className="font-bold">Search bar</h3>
 
-          {/* <div>
+          <div>
             <Searchbar placeholder="search" />
-          </div> */}
+          </div>
         </div>
       </div>
     </>

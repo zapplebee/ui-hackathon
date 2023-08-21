@@ -4,7 +4,7 @@ import { IconRunning } from "./icons/IconRunning.tsx";
 import { IconSuccess } from "./icons/IconSuccess.tsx";
 
 interface StatusIndicatorProps {
-  status: string;
+  status: "failure" | "canceled" | "error" | "success" | "running" | "pending";
 }
 export function StatusIndicator({ status }: StatusIndicatorProps) {
   return (

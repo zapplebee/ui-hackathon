@@ -152,7 +152,7 @@ export function RepoSecretsForm({
     secretMutation.mutate(data);
   };
 
-  const { isLoading, isSuccess, failureReason } = secretMutation;
+  const { isLoading, failureReason } = secretMutation;
 
   const failureString = getFailureText(failureReason);
 

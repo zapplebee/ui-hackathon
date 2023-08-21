@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import ansiHTML from "ansi-html-community";
 import classNames from "classnames";
 import { Base64 } from "js-base64";
 import { useEffect, useRef, useState } from "react";
@@ -8,6 +7,7 @@ import { Build, BuildsService, Step, StepsService } from "../api";
 import { Details } from "../components/Details";
 import { DetailsPanel } from "../components/DetailsPanel";
 import { Loader } from "../components/Loader";
+import { LogsDisplay, LogsDisplayMethods } from "../components/LogsDisplay";
 import { TimeTicker2 } from "../components/TimeTicker2";
 import { IconDownArrow } from "../components/icons/IconDownArrow";
 import { IconFailure } from "../components/icons/IconFailure";
@@ -22,7 +22,6 @@ import { REFETCH_INTERVAL } from "../library/constants";
 import { useBuildNumberParam } from "../library/hooks/useBuildNumberParam";
 import { useOrgParam } from "../library/hooks/useOrgParam";
 import { useRepoParam } from "../library/hooks/useRepoParam";
-import { LogsDisplay, LogsDisplayMethods } from "../components/LogsDisplay";
 
 export function RepoBuildSteps() {
   const org = useOrgParam();

@@ -4,9 +4,10 @@ import { BuildsService } from "../api";
 import { BuildFilterBar } from "../components/BuildFilterBar";
 import { BuildRow } from "../components/BuildRow";
 import { Loader } from "../components/Loader";
-import { Pager } from "../components/Pager";
+import { Pager2 } from "../components/Pager2";
 import { TopBumper } from "../components/TopBumper";
 import { REFETCH_INTERVAL } from "../library/constants";
+import { getHeaders, getLink, getPagination } from "../library/headers";
 import { useEventParam } from "../library/hooks/useEventParam";
 import { useOrgParam } from "../library/hooks/useOrgParam";
 import { usePageParam } from "../library/hooks/usePageParam";
@@ -36,6 +37,8 @@ export function RepoBuilds() {
     refetchInterval: REFETCH_INTERVAL,
   });
 
+  const pagination = getPagination(getLink(getHeaders(builds.data)));
+
   return (
     <>
       <TopBumper />
@@ -57,7 +60,11 @@ export function RepoBuilds() {
                   <BuildFilterBar />
                 </div>
                 <div>
-                  <Pager path={`/${org}/${repo}`} page={page} />
+                  <Pager2
+                    path={`/${org}/${repo}`}
+                    page={page}
+                    pagination={pagination}
+                  />
                 </div>
               </div>
             ) : null}

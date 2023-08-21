@@ -5,7 +5,7 @@ import { ExternalLink } from "../components/ExternalLink";
 import { PageTitle } from "../components/PageTitle";
 import { StatusIndicator } from "../components/StatusIndicator";
 import { TopBumper } from "../components/TopBumper";
-import { Button } from "../components/button/B2";
+import { Button } from "../components/button/Button";
 import { Link } from "react-router-dom";
 
 // import { Searchbar } from "../components/Searchbar";

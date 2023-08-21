@@ -1,36 +1,27 @@
-import React from "react";
-import type {
-  PolymorphicForwardRefExoticComponent,
-  PolymorphicPropsWithoutRef,
-  PolymorphicPropsWithRef,
-} from "../../library/polymorphic";
-import type { VariantProps } from "class-variance-authority";
-import { buttonVariants } from "./variants";
+import { ComponentPropsWithoutRef, ElementType } from "react";
+import classNames from "classnames";
+import { type ButtonIntent, getButtonVariantClasses } from "./button-variants";
 
-export interface ButtonProps extends VariantProps<typeof buttonVariants> {}
+export interface ButtonProps<T extends ElementType = "button"> {
+  as?: T;
+  intent?: ButtonIntent;
+}
 
-export type ForwardedButtonProps<T extends React.ElementType = "button"> =
-  PolymorphicPropsWithRef<ButtonProps, T>;
-
-export const Button: PolymorphicForwardRefExoticComponent<
-  ButtonProps,
-  "button"
-> = React.forwardRef(function Heading<T extends React.ElementType = "button">(
-  {
-    as,
-    intent,
-
-    className,
-    ...restProps
-  }: PolymorphicPropsWithoutRef<ButtonProps, T>,
-  ref: React.ForwardedRef<Element>
-) {
-  const Element: React.ElementType = as || "button";
-  return (
-    <Element
-      ref={ref}
-      className={buttonVariants({ intent, className })}
-      {...restProps}
-    />
-  );
-});
+/**
+ * Button.
+ *
+ * The default intent is "primary."
+ *
+ * @param props button props
+ * @returns
+ */
+export function Button<T extends ElementType = "button">({
+  as,
+  intent,
+  className,
+  ...props
+}: ButtonProps<T> & ComponentPropsWithoutRef<T>) {
+  const Comp = as || "button";
+  const variantCls = getButtonVariantClasses(intent || "primary");
+  return <Comp {...props} className={classNames(variantCls, className)} />;
+}

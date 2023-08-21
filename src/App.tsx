@@ -35,15 +35,16 @@ import { OrgSecrets } from "./pages/OrgSecrets";
 import { OrgSharedSecrets } from "./pages/OrgSharedSecrets";
 import { RepoAudit } from "./pages/RepoAudit";
 import { RepoBuild } from "./pages/RepoBuild";
+import { RepoBuildSteps } from "./pages/RepoBuildSteps";
 import { RepoBuilds } from "./pages/RepoBuilds";
 import { RepoDeployments } from "./pages/RepoDeployments";
 import { RepoRoot } from "./pages/RepoRoot";
 import { RepoSecrets } from "./pages/RepoSecrets";
-import { RepoSettings } from "./pages/RepoSettings";
-import { Playground } from "./pages/_Playground";
 import { RepoSecretsAdd } from "./pages/RepoSecretsAdd";
 import { RepoSecretsEdit } from "./pages/RepoSecretsEdit";
+import { RepoSettings } from "./pages/RepoSettings";
 import { Kitchen } from "./pages/_Kitchen";
+import { Playground } from "./pages/_Playground";
 
 const queryClient = new QueryClient();
 
@@ -125,12 +126,8 @@ const router = createBrowserRouter([
             // this has neither index: true nor
             // a specified route
             // so how does any of this work?
-            element: (
-              <>
-                <Outlet />
-              </>
-            ),
-            // index: true,
+            element: <Outlet />,
+
             handle: {
               crumb: (a: RouteWithHandle) => {
                 return (
@@ -147,11 +144,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "/:org/:repo/:number",
-                element: (
-                  <>
-                    <Outlet />
-                  </>
-                ),
+                element: <RepoBuild />,
                 handle: {
                   crumb: (a: RouteWithHandle) => {
                     return (
@@ -159,7 +152,7 @@ const router = createBrowserRouter([
                         to={getBuildRoute(
                           a.params.org!,
                           a.params.repo!,
-                          a.params.number!
+                          a.params.number!,
                         )}
                       >
                         #{a.params.number}
@@ -169,16 +162,16 @@ const router = createBrowserRouter([
                 },
                 children: [
                   {
+                    element: <RepoBuildSteps />,
                     index: true,
-                    element: <RepoBuild />,
                   },
                   {
                     path: "/:org/:repo/:number/services",
-                    element: <ComingSoon />,
+                    element: <ComingSoon title="Services" />,
                   },
                   {
                     path: "/:org/:repo/:number/pipeline",
-                    element: <ComingSoon />,
+                    element: <ComingSoon title="Pipeline" />,
                   },
                 ],
               },

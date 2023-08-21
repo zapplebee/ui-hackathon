@@ -1,12 +1,14 @@
 import { Helmet } from "react-helmet-async";
-// import { Button } from "../components/button/Button";
+import { Link } from "react-router-dom";
+import { BuildFilterBar } from "../components/BuildFilterBar";
 import { Details } from "../components/Details";
 import { DetailsPanel } from "../components/DetailsPanel";
-import { PageTitle } from "../components/PageTitle";
-import { TopBumper } from "../components/TopBumper";
-import { StatusIndicator } from "../components/StatusIndicator";
 import { ExternalLink } from "../components/ExternalLink";
+import { PageTitle } from "../components/PageTitle";
 import { Searchbar } from "../components/Searchbar";
+import { StatusIndicator } from "../components/StatusIndicator";
+import { TopBumper } from "../components/TopBumper";
+import { Button } from "../components/button/Button";
 
 /**
  * The purpose of the kitchen is to display generic non-connected versions of
@@ -25,7 +27,7 @@ export function Kitchen() {
       <div className="space-y-4">
         <PageTitle>Kitchen</PageTitle>
 
-        {/* <div className="flex w-1/2 flex-col gap-4">
+        <div className="flex w-1/2 flex-col gap-4">
           <h3 className="font-bold">Buttons, Plain</h3>
 
           <Button>Primary (default) button</Button>
@@ -54,13 +56,36 @@ export function Kitchen() {
           <Button as="a" href="#" intent="underlined">
             Underlined button
           </Button>
-        </div> */}
+        </div>
+
+        <div className="flex w-1/2 flex-col gap-4">
+          <h3 className="font-bold">Router Link</h3>
+
+          <Button as={Link} to="/?example">
+            Primary (default) button
+          </Button>
+          <Button as={Link} to="/?example" intent="secondary">
+            Secondary button
+          </Button>
+          <Button as={Link} to="/?example" intent="underlined">
+            Underlined button
+          </Button>
+        </div>
 
         <div className="flex w-1/2 flex-col gap-4">
           <h3 className="font-bold">Details</h3>
 
           <Details summary={<>Generic label</>}>
-            <DetailsPanel>Generic details panel content</DetailsPanel>
+            <DetailsPanel>
+              <div className="space-y-4">
+                <p>Generic details panel content</p>
+                <hr />
+                <div className="space-x-2">
+                  <Button>Save</Button>
+                  <Button intent="underlined">Cancel</Button>
+                </div>
+              </div>
+            </DetailsPanel>
           </Details>
 
           <Details summary={<>Open by default</>} open={true}>
@@ -116,6 +141,14 @@ export function Kitchen() {
 
           <div>
             <Searchbar placeholder="search" />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <h3 className="font-bold">Build Filter Bar</h3>
+
+          <div>
+            <BuildFilterBar />
           </div>
         </div>
       </div>

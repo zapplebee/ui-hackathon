@@ -34,7 +34,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           >
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-          <Label.Root className="flex-1 font-bold" htmlFor={id}>
+          <Label.Root className="flex-1" htmlFor={id}>
             {label}
           </Label.Root>
         </div>

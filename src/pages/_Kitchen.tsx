@@ -4,12 +4,13 @@ import { BuildFilterBar } from "../components/BuildFilterBar";
 import { Details } from "../components/Details";
 import { DetailsPanel } from "../components/DetailsPanel";
 import { ExternalLink } from "../components/ExternalLink";
+import { Loader } from "../components/Loader";
+import { LogsDisplay } from "../components/LogsDisplay";
 import { PageTitle } from "../components/PageTitle";
 import { Searchbar } from "../components/Searchbar";
 import { StatusIndicator } from "../components/StatusIndicator";
 import { TopBumper } from "../components/TopBumper";
 import { Button } from "../components/button/Button";
-import { LogsDisplay } from "../components/LogsDisplay";
 
 /**
  * The purpose of the kitchen is to display generic non-connected versions of
@@ -29,7 +30,7 @@ export function Kitchen() {
         <PageTitle>Kitchen</PageTitle>
 
         <div className="flex w-1/2 flex-col gap-4">
-          <h3 className="font-bold">Buttons, Plain</h3>
+          <h3 className="font-bold">Buttons as buttons</h3>
 
           <Button>Primary (default) button</Button>
           <Button intent="secondary">Secondary button</Button>
@@ -46,7 +47,7 @@ export function Kitchen() {
         </div>
 
         <div className="flex w-1/2 flex-col gap-4">
-          <h3 className="font-bold">Anchors, Plain</h3>
+          <h3 className="font-bold">Buttons as anchors (links)</h3>
 
           <Button as="a" href="#">
             Primary (default) button
@@ -60,7 +61,7 @@ export function Kitchen() {
         </div>
 
         <div className="flex w-1/2 flex-col gap-4">
-          <h3 className="font-bold">Router Link</h3>
+          <h3 className="font-bold">Buttons as a router link</h3>
 
           <Button as={Link} to="/?example">
             Primary (default) button
@@ -71,6 +72,78 @@ export function Kitchen() {
           <Button as={Link} to="/?example" intent="underlined">
             Underlined button
           </Button>
+        </div>
+
+        <div className="flex w-1/2 flex-col gap-4">
+          <h3 className="font-bold">Buttons with icons</h3>
+
+          <Button
+            intent="primary"
+            className="flex gap-2 justify-between items-center"
+          >
+            <span>Restart Build</span>
+            <Loader />
+          </Button>
+
+          <Button
+            intent="primary"
+            className="flex gap-2 justify-start items-center"
+          >
+            <span>Restart Build</span>
+            <Loader />
+          </Button>
+
+          <Button
+            intent="secondary"
+            className="flex gap-2 justify-between items-center"
+          >
+            <span>Restart Build</span>
+            <Loader />
+          </Button>
+
+          <Button
+            intent="secondary"
+            className="flex gap-2 justify-start items-center"
+          >
+            <span>Restart Build</span>
+            <Loader />
+          </Button>
+
+          <div className="flex items-center gap-4">
+            <Button
+              intent="primary"
+              className="flex gap-2 justify-start items-center"
+            >
+              ← newer
+            </Button>
+            <Button
+              intent="primary"
+              className="flex gap-2 justify-start items-center"
+            >
+              older →
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <Button
+              intent="secondary"
+              className="flex gap-2 justify-start items-center"
+            >
+              ← newer
+            </Button>
+            <Button
+              intent="secondary"
+              className="flex gap-2 justify-start items-center"
+            >
+              older →
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex w-1/2 flex-col gap-4">
+          <h3 className="font-bold">Loading</h3>
+
+          <Loader />
         </div>
 
         <div className="flex w-1/2 flex-col gap-4">

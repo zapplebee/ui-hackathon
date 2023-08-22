@@ -17,5 +17,5 @@ export type Pipeline = {
   stages?: boolean;
   steps?: boolean;
   templates?: boolean;
-  data?: number[];
+  data?: string; // TODO this was number before
 };

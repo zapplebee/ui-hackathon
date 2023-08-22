@@ -22,6 +22,7 @@ import {
   getBuildRoute,
   getBuildServicesRoute,
 } from "../library/routes.ts";
+import { replaceFavicon } from "../library/favicon.ts";
 
 export function RepoBuild() {
   const org = useOrgParam();
@@ -90,6 +91,23 @@ export function RepoBuild() {
 
   // todo
   // consider fetching the logs for steps at the top level here instead
+
+  useEffect(() => {
+    if (build.isSuccess && build.data.status === "success") {
+      replaceFavicon("/favicons/favicon-success.ico");
+    } else if (build.isSuccess && build.data.status === "pending") {
+      replaceFavicon("/favicons/favicon-pending.ico");
+    } else if (build.isSuccess && build.data.status === "running") {
+      replaceFavicon("/favicons/favicon-running.ico");
+    } else if (
+      build.isSuccess &&
+      ["failure", "error", "killed", "canceled"].includes(
+        build.data.status ?? "",
+      )
+    ) {
+      replaceFavicon("/favicons/favicon-failure.ico");
+    }
+  }, [build.isSuccess, build?.data?.status]);
 
   if (builds.isLoading || build.isLoading) {
     return (

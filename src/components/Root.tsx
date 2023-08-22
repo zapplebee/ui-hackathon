@@ -1,8 +1,9 @@
+import jwtDecode from "jwt-decode";
 import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { replaceFavicon } from "../library/favicon";
 import { AppHeader } from "./AppHeader";
 import { AppNavigation } from "./AppNavigation";
-import jwtDecode from "jwt-decode";
 
 type VelaJwt = {
   build_id: number;
@@ -43,6 +44,7 @@ export function Root() {
 
   return (
     <>
+      <Favicon />
       <AppHeader />
       <AppNavigation />
 
@@ -51,4 +53,12 @@ export function Root() {
       </div>
     </>
   );
+}
+
+function Favicon() {
+  const location = useLocation();
+  useEffect(() => {
+    replaceFavicon("/favicons/favicon.ico");
+  }, [location.key]);
+  return <></>;
 }

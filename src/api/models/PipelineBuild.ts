@@ -18,3 +18,5 @@ export type PipelineBuild = {
   stages?: PipelineStage[];
   steps?: PipelineContainer[];
 };
+
+export type PipelineExpansion = string;

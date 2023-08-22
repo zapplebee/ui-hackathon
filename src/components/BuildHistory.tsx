@@ -1,19 +1,19 @@
 import classNames from "classnames";
+import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { Build } from "../api";
+import { TimeTicker2 } from "./TimeTicker2.tsx";
 import { IconFailureMini } from "./icons/IconFailureMini.tsx";
+import { IconPendingMini } from "./icons/IconPendingMini.tsx";
 import { IconRunningMini } from "./icons/IconRunningMini.tsx";
 import { IconSuccessMini } from "./icons/IconSuccessMini.tsx";
-import { IconPendingMini } from "./icons/IconPendingMini.tsx";
 
 export interface Props {
   org: string;
   repo: string;
   builds: Build[];
-  current: number; // todo: is this the best way?
+  current: number;
 }
-
-//
 
 export function BuildHistory(props: Props) {
   return (
@@ -35,7 +35,7 @@ export function BuildHistory(props: Props) {
                 build.status === "canceled" ||
                 build.status === "error",
               "bg-vela-gray": build.status === "pending",
-            }
+            },
           );
           return (
             <li
@@ -64,24 +64,54 @@ export function BuildHistory(props: Props) {
               </Link>
 
               {/*
-                the popover variant is in this repo's history, but you can also re-adapt this same code into popover format
+                TODO:ACCESSIBILITY
+                Because this requires `hover` (aligned with the original implementation,
+                it is not necessarily the most accessible component in the ui.
+                We should review this component and make it keyboard controllable at least.
               */}
-              <div className="absolute left-0 top-8 z-10 hidden w-64 origin-top-right border border-vela-cyan bg-vela-coal-dark shadow-lg group-hover:block">
+              <div className="absolute left-0 top-8 z-10 hidden w-64 origin-top-right border border-vela-coal-light bg-vela-coal-dark shadow-lg group-hover:block">
                 <div className="p-2 text-sm">
-                  <dl className="flex flex-wrap justify-between [&_dd]:w-1/2 [&_dd]:text-right [&_dt]:w-1/2">
+                  <dl className="grid grid-cols-[max-content_1fr] gap-x-4 [&_dd]:text-right">
                     <dt>#{build.number}</dt>
                     <dd>
                       <em title="event type">{build.event}</em>
                     </dd>
 
-                    <dt>started:</dt>
-                    <dd>{build.started}</dd>
+                    {build.started ? (
+                      <>
+                        <dt>started:</dt>
+                        <dd>
+                          {format(
+                            new Date(build.started * 1000),
+                            "MMMM do, yyyy",
+                          )}
+                        </dd>
+                      </>
+                    ) : null}
 
-                    <dt>finished:</dt>
-                    <dd>{build.finished}</dd>
+                    {build.finished ? (
+                      <>
+                        <dt>finished:</dt>
+                        <dd>
+                          {format(
+                            new Date(build.finished * 1000),
+                            "MMMM do, yyyy",
+                          )}
+                        </dd>
+                      </>
+                    ) : null}
 
-                    <dt>duration:</dt>
-                    <dd>18:25</dd>
+                    {build.started && build.finished ? (
+                      <>
+                        <dt>duration:</dt>
+                        <dd>
+                          <TimeTicker2
+                            start={build.started}
+                            end={build.finished}
+                          />
+                        </dd>
+                      </>
+                    ) : null}
 
                     <dt>worker:</dt>
                     <dd>{build.host}</dd>

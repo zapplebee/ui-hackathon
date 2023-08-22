@@ -185,6 +185,16 @@ export function RepoBuild() {
 
         <div className="py-2"></div>
 
+        {/*
+          // TODO:
+          // in theory, this top level query should know how to tell children queries
+          // deeply nested, when it is time to stop refreshing their data. the hard part
+          // about this now is that we're using react router for tab management instead of
+          // actually having the components on screen. one clever way to handle this might
+          // be a context (a provider in this case) that wraps around this outlet, and
+          // then that way the children can ask with useShouldRefresh to determine their
+          // state
+        */}
         <Outlet />
       </div>
     </>

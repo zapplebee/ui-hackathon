@@ -9,6 +9,7 @@ import { Searchbar } from "../components/Searchbar";
 import { StatusIndicator } from "../components/StatusIndicator";
 import { TopBumper } from "../components/TopBumper";
 import { Button } from "../components/button/Button";
+import { LogsDisplay } from "../components/LogsDisplay";
 
 /**
  * The purpose of the kitchen is to display generic non-connected versions of
@@ -150,6 +151,22 @@ export function Kitchen() {
           <div>
             <BuildFilterBar />
           </div>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <h3 className="font-bold">Logs</h3>
+
+          <Details summary="Logs" open={true}>
+            <DetailsPanel padded={false}>
+              <LogsDisplay
+                id="example"
+                number={1}
+                active={true}
+                fetching={false}
+                logs={["Line 1", "Line 2", "Line 3"]}
+              />
+            </DetailsPanel>
+          </Details>
         </div>
       </div>
     </>

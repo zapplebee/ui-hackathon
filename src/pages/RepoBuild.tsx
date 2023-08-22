@@ -12,9 +12,11 @@ import { useBuildsQuery } from "../library/hooks/useBuilds";
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router";
 import { NavLink } from "react-router-dom";
+import { Button } from "../components/button/Button.tsx";
 import { TabsContainer } from "../components/tabs/TabsContainer.tsx";
 import { getTabNavLinkCls } from "../components/tabs/tabs-utils.ts";
 import { REFETCH_INTERVAL } from "../library/constants";
+import { replaceFavicon } from "../library/favicon.ts";
 import { useOrgParam } from "../library/hooks/useOrgParam.ts";
 import { useRepoParam } from "../library/hooks/useRepoParam.ts";
 import {
@@ -22,7 +24,6 @@ import {
   getBuildRoute,
   getBuildServicesRoute,
 } from "../library/routes.ts";
-import { replaceFavicon } from "../library/favicon.ts";
 
 export function RepoBuild() {
   const org = useOrgParam();
@@ -139,33 +140,27 @@ export function RepoBuild() {
             </div>
             <div className="flex gap-2">
               {build.data?.status === "running" ? (
-                <button
-                  className="btn-secondary flex items-center justify-between gap-2"
+                <Button
+                  intent="secondary"
+                  className="flex items-center justify-between gap-2"
                   onClick={() => {
                     cancelBuildMutation.mutate();
                   }}
                 >
                   <span>Cancel Build</span>
-                  {cancelBuildMutation.isLoading ? (
-                    <span className="text-white">
-                      <Loader />
-                    </span>
-                  ) : null}
-                </button>
+                  {cancelBuildMutation.isLoading ? <Loader /> : null}
+                </Button>
               ) : null}
-              <button
-                className="btn-secondary flex gap-2"
+              <Button
+                intent="secondary"
+                className="flex items-center justify-between gap-2"
                 onClick={() => {
                   restartBuildMutation.mutate();
                 }}
               >
                 <span>Restart Build</span>
-                {restartBuildMutation.isLoading ? (
-                  <span className="text-white">
-                    <Loader />
-                  </span>
-                ) : null}
-              </button>
+                {restartBuildMutation.isLoading ? <Loader /> : null}
+              </Button>
             </div>
           </div>
         ) : null}

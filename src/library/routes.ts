@@ -34,6 +34,10 @@ export function getRepoRoute(org: string, repo: string) {
   return `/${org}/${repo}`;
 }
 
+export function getRepoSettingsRoute(org: string, repo: string) {
+  return `/${org}/${repo}/settings`;
+}
+
 export function getBuildRoute(
   org: string,
   repo: string,

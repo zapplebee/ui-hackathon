@@ -28,8 +28,6 @@ export function Pager2(props: PagerProps) {
   const left = props.pagination && "prev" in props.pagination;
   const right = props.pagination && "next" in props.pagination;
 
-  console.log("details=", props.pagination);
-
   // these could have been Link but
   // I wanted to maintain any existing query strings in the url
   // if they were in there but neither way in

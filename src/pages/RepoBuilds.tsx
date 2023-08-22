@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
 import { BuildsService } from "../api";
 import { BuildFilterBar } from "../components/BuildFilterBar";
 import { BuildRow } from "../components/BuildRow";
@@ -12,6 +11,8 @@ import { useEventParam } from "../library/hooks/useEventParam";
 import { useOrgParam } from "../library/hooks/useOrgParam";
 import { usePageParam } from "../library/hooks/usePageParam";
 import { useRepoParam } from "../library/hooks/useRepoParam";
+import { Link } from "react-router-dom";
+import { getRepoSettingsRoute } from "../library/routes";
 
 export function RepoBuilds() {
   const org = useOrgParam();
@@ -31,7 +32,7 @@ export function RepoBuilds() {
         undefined,
         undefined,
         page,
-        undefined
+        undefined,
       ),
     // todo: would like to throttle this when its not busy
     refetchInterval: REFETCH_INTERVAL,
@@ -44,7 +45,7 @@ export function RepoBuilds() {
       <TopBumper />
 
       {builds.isSuccess && builds.data.length === 0 ? (
-        <NoBuilds />
+        <NoBuilds org={org} repo={repo} />
       ) : (
         <div>
           <div>
@@ -69,15 +70,11 @@ export function RepoBuilds() {
               </div>
             ) : null}
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-6">
               {builds.isSuccess && builds.data.length > 0 ? (
                 <>
                   {builds.data.map((build) => {
-                    return (
-                      <React.Fragment key={build.id}>
-                        <BuildRow build={build} />
-                      </React.Fragment>
-                    );
+                    return <BuildRow key={build.id} build={build} />;
                   })}
                 </>
               ) : null}
@@ -90,7 +87,12 @@ export function RepoBuilds() {
   );
 }
 
-function NoBuilds() {
+interface NoBuildsProps {
+  org: string;
+  repo: string;
+}
+
+function NoBuilds({ org, repo }: NoBuildsProps) {
   return (
     <>
       <h3 className="text-3xl font-bold">Your repository has been enabled!</h3>
@@ -98,10 +100,10 @@ function NoBuilds() {
       <div className="space-y-4 text-base">
         <p>Builds will show up here once you have: </p>
 
-        <ol className="list-inside list-decimal space-y-4 pl-4">
+        <ol className="list-outside list-decimal space-y-4 pl-8">
           <li>
             A <code>.vela.yml</code> file that describes your build pipeline in
-            the root of your repository.{" "}
+            the root of your repository. <br />
             <a href="https://go-vela.github.io/docs/usage/">
               Review the documentation
             </a>{" "}
@@ -113,8 +115,11 @@ function NoBuilds() {
           </li>
           {/* todo webhook settings */}
           <li>
-            Trigger one of the <a href="#">configured webhook events</a> by
-            performing the respective action via Git.
+            Trigger one of the{" "}
+            <Link to={getRepoSettingsRoute(org, repo)}>
+              configured webhook events
+            </Link>{" "}
+            by performing the respective action via Git.
           </li>
         </ol>
 

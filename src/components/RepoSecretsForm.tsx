@@ -53,7 +53,6 @@ export function RepoSecretsForm({
   secretName,
   mode,
 }: RepoSecretsFormProps) {
-  console.log({ org, repo, secretName, mode });
   const navigate = useNavigate();
   const { register, handleSubmit, getValues, setValue, formState, control } =
     useForm<FormValues>({
@@ -74,7 +73,7 @@ export function RepoSecretsForm({
           "repo",
           org,
           repo,
-          secretName!
+          secretName!,
         )) as unknown as SecretCorrected;
 
         return {
@@ -98,8 +97,6 @@ export function RepoSecretsForm({
 
   const secretMutation = useMutation({
     mutationFn: (data: FormValues) => {
-      console.log("repo secrets add widget payload", JSON.stringify(data));
-
       const createSecretBody: SecretPost = {
         org,
         repo,
@@ -119,7 +116,7 @@ export function RepoSecretsForm({
           "repo",
           org,
           repo,
-          createSecretBody
+          createSecretBody,
         );
       }
 
@@ -129,7 +126,7 @@ export function RepoSecretsForm({
         org,
         repo,
         secretName as string,
-        createSecretBody
+        createSecretBody,
       );
     },
     onError() {
@@ -141,7 +138,7 @@ export function RepoSecretsForm({
       if (mode === "add") {
         navigate(
           getRepoSecretsEditRoute(org, repo, `${getValues("secretName")}`),
-          { replace: true }
+          { replace: true },
         );
       }
       SuccessToast.publish();
@@ -252,7 +249,7 @@ export function RepoSecretsForm({
                       const existingValues = getValues("allowedImages");
                       const nextValues = addStringToSetArray(
                         newValue,
-                        existingValues
+                        existingValues,
                       );
                       setValue("allowedImages", nextValues);
                       setValue("_allowedImageName", "");

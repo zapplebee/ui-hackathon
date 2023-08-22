@@ -61,7 +61,7 @@ export function BuildRow({
             <div className="flex min-w-0 flex-row gap-1">
               <div>
                 <Link
-                  className="text-blue-400 underline hover:no-underline"
+                  className="text-vela-cyan underline hover:no-underline"
                   to={`${buildBase}/${build.number}`}
                 >
                   #{build.number}
@@ -83,7 +83,7 @@ export function BuildRow({
                     // todo: how do we reconstruct this url?
                     // todo: add rel no ref / no opener w/ target blank
                     href="#"
-                    className="text-blue-400 underline hover:no-underline"
+                    className="text-vela-cyan underline hover:no-underline"
                   >
                     {repoName}
                   </a>
@@ -93,14 +93,14 @@ export function BuildRow({
               {build.event} (
               <a
                 href="#"
-                className="text-blue-400 underline hover:no-underline"
+                className="text-vela-cyan underline hover:no-underline"
               >
                 {build.commit!.substring(0, 8)}
               </a>
               ) on{" "}
               <a
                 href="#"
-                className="text-blue-400 underline hover:no-underline"
+                className="text-vela-cyan underline hover:no-underline"
               >
                 {build.branch}
               </a>{" "}
@@ -286,7 +286,7 @@ function BuildActions() {
                     active
                       ? "bg-vela-coal text-white underline"
                       : "text-vela-offwhite",
-                    "block w-full px-4 py-2 text-sm"
+                    "block w-full px-4 py-2 text-sm",
                   )}
                 >
                   Restart build

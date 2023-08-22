@@ -99,11 +99,13 @@ body {
     top: -2px;
   }
   .build-animation.-bottom.-running {
-    animation: 26s linear 26s infinite build-status-parallax-running,
+    animation:
+      26s linear 26s infinite build-status-parallax-running,
       26s linear build-status-parallax-start;
   }
   .build-animation.-top.-running {
-    animation: 22s linear 22s infinite build-status-parallax-running,
+    animation:
+      22s linear 22s infinite build-status-parallax-running,
       22s linear build-status-parallax-start;
   }
   .build-animation.-bottom.-start {

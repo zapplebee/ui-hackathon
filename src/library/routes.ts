@@ -13,7 +13,7 @@ export function getRepoSecretsAddRoute(org: string, repo: string) {
 export function getRepoSecretsEditRoute(
   org: string,
   repo: string,
-  secretName: string
+  secretName: string,
 ) {
   return `/${org}/${repo}/$/secrets/native/edit/${secretName}`;
 }
@@ -34,8 +34,28 @@ export function getRepoRoute(org: string, repo: string) {
   return `/${org}/${repo}`;
 }
 
-export function getBuildRoute(org: string, repo: string, number: string) {
+export function getBuildRoute(
+  org: string,
+  repo: string,
+  number: string | number,
+) {
   return `/${org}/${repo}/${number}`;
+}
+
+export function getBuildServicesRoute(
+  org: string,
+  repo: string,
+  number: string | number,
+) {
+  return `/${org}/${repo}/${number}/services`;
+}
+
+export function getBuildPipelineRoute(
+  org: string,
+  repo: string,
+  number: string | number,
+) {
+  return `/${org}/${repo}/${number}/pipeline`;
 }
 
 export function getSourceReposRoute() {

@@ -335,7 +335,20 @@ export const request = <T>(
 
         catchErrorCodes(options, result);
 
-        resolve(result.body);
+        /**
+         * TODO / NOTE: How would we official expose access to headers?
+         * This is a _trick_ that secretly mutates a portion of an object and sets the headers.
+         *
+         * See the src/library/headers.ts file for examples of access.
+         */
+
+        if (responseBody && typeof responseBody === "object") {
+          responseBody.__headers = Object.fromEntries(
+            response.headers.entries()
+          );
+        }
+
+        resolve(responseBody);
       }
     } catch (error) {
       reject(error);

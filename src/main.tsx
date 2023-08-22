@@ -15,11 +15,14 @@ OpenAPI.BASE = import.meta.env.VITE_VELA_API ?? "http://localhost:8080";
  * @returns
  */
 OpenAPI.TOKEN = async () => {
-  return window.localStorage.getItem("vela-access-token") ?? "";
+  return (
+    window.localStorage.getItem("vela-access-token")?.replace("Bearer ", "") ??
+    ""
+  );
 };
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

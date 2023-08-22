@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Pipeline } from "../models/Pipeline";
-import type { PipelineBuild } from "../models/PipelineBuild";
+import type { PipelineBuild, PipelineExpansion } from "../models/PipelineBuild";
 import type { Template } from "../models/Template";
 
 import type { CancelablePromise } from "../core/CancelablePromise";
@@ -23,7 +23,7 @@ export class PipelinesService {
     org: string,
     repo: string,
     page: number = 1,
-    perPage: number = 10
+    perPage: number = 10,
   ): CancelablePromise<Array<Pipeline>> {
     return __request(OpenAPI, {
       method: "GET",
@@ -54,7 +54,7 @@ export class PipelinesService {
   public static createPipeline(
     org: string,
     repo: string,
-    body: Pipeline
+    body: Pipeline,
   ): CancelablePromise<Pipeline> {
     return __request(OpenAPI, {
       method: "POST",
@@ -83,7 +83,7 @@ export class PipelinesService {
   public static getPipeline(
     org: string,
     repo: string,
-    pipeline: string
+    pipeline: string,
   ): CancelablePromise<Pipeline> {
     return __request(OpenAPI, {
       method: "GET",
@@ -109,7 +109,7 @@ export class PipelinesService {
     org: string,
     repo: string,
     pipeline: string,
-    body: Pipeline
+    body: Pipeline,
   ): CancelablePromise<Pipeline> {
     return __request(OpenAPI, {
       method: "PUT",
@@ -138,7 +138,7 @@ export class PipelinesService {
   public static deletePipeline(
     org: string,
     repo: string,
-    pipeline: string
+    pipeline: string,
   ): CancelablePromise<string> {
     return __request(OpenAPI, {
       method: "DELETE",
@@ -168,7 +168,7 @@ export class PipelinesService {
     repo: string,
     org: string,
     pipeline: string,
-    output: "json" | "yaml" = "yaml"
+    output: "json" | "yaml" = "yaml",
   ): CancelablePromise<PipelineBuild> {
     return __request(OpenAPI, {
       method: "POST",
@@ -198,11 +198,11 @@ export class PipelinesService {
    * @throws ApiError
    */
   public static expandPipeline(
-    repo: string,
     org: string,
+    repo: string, // TODO reversed here as well
     pipeline: string,
-    output: "json" | "yaml" = "yaml"
-  ): CancelablePromise<PipelineBuild> {
+    output: "json" | "yaml" = "yaml",
+  ): CancelablePromise<PipelineExpansion> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/v1/pipelines/{org}/{repo}/{pipeline}/expand",
@@ -231,10 +231,10 @@ export class PipelinesService {
    * @throws ApiError
    */
   public static getTemplates(
-    repo: string,
     org: string,
+    repo: string, // TODO this had its repo and org parameters reversed; org was in this spot before
     pipeline: string,
-    output: "json" | "yaml" = "yaml"
+    output: "json" | "yaml" = "yaml",
   ): CancelablePromise<Template> {
     return __request(OpenAPI, {
       method: "GET",
@@ -267,7 +267,7 @@ export class PipelinesService {
     repo: string,
     org: string,
     pipeline: string,
-    output: "json" | "yaml" = "yaml"
+    output: "json" | "yaml" = "yaml",
   ): CancelablePromise<string> {
     return __request(OpenAPI, {
       method: "POST",

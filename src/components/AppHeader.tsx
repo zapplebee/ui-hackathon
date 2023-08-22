@@ -8,7 +8,10 @@ import { Logo } from "./Logo";
 
 export function AppHeader() {
   return (
-    <header className="__custom-header-radial-gradient __custom-header-border-effect">
+    <header
+      id="vela-top"
+      className="__custom-header-radial-gradient __custom-header-border-effect"
+    >
       <div className="flex items-center justify-between">
         {/* left */}
         <div className="flex gap-4">
@@ -30,9 +33,7 @@ export function AppHeader() {
             {/* todo: slash separators */}
 
             <li>
-              <Link to="/" rel="noopener noreferrer">
-                home
-              </Link>
+              <Link to="/">overview</Link>
             </li>
             <li>
               <a
@@ -71,7 +72,6 @@ export function AppHeader() {
           </ul>
         </div>
       </div>
-      {/* <div className="h-[2px] custom-header-border-effect"></div> */}
     </header>
   );
 }
@@ -106,7 +106,7 @@ function UserActions() {
                   className={classNames(
                     "transform text-vela-cyan transition-transform duration-300",
                     { "-rotate-180": open },
-                    { "rotate-0": !open }
+                    { "rotate-0": !open },
                   )}
                   fill="none"
                   height="20"
@@ -144,7 +144,7 @@ function UserActions() {
                     active
                       ? "bg-vela-coal !text-white underline"
                       : "!text-vela-offwhite",
-                    "block w-full px-4 py-2 text-sm"
+                    "block w-full px-4 py-2 text-sm",
                   )}
                 >
                   Settings
@@ -162,7 +162,7 @@ function UserActions() {
                     active
                       ? "bg-vela-coal !text-white underline"
                       : "!text-vela-offwhite",
-                    "block w-full px-4 py-2 text-left text-sm"
+                    "block w-full px-4 py-2 text-left text-sm",
                   )}
                 >
                   Logout

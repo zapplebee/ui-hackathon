@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { Build } from "../api";
-import { TimeTicker2 } from "./TimeTicker2.tsx";
+import { TimeTicker3 } from "./TimeTicker3.tsx";
 import { IconFailureMini } from "./icons/IconFailureMini.tsx";
 import { IconPendingMini } from "./icons/IconPendingMini.tsx";
 import { IconRunningMini } from "./icons/IconRunningMini.tsx";
@@ -105,7 +105,7 @@ export function BuildHistory(props: Props) {
                       <>
                         <dt>duration:</dt>
                         <dd>
-                          <TimeTicker2
+                          <TimeTicker3
                             start={build.started}
                             end={build.finished}
                           />

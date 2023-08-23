@@ -8,10 +8,8 @@ interface TabsContainerProps extends PropsWithChildren {}
  */
 export function TabsContainer({ children }: TabsContainerProps) {
   return (
-    <div className="flex flex-col">
-      <ul className="relative flex flex-1 gap-x-8 overflow-x-auto overflow-y-hidden pb-2 sm:overflow-x-visible sm:overflow-y-visible sm:border-b-4 sm:border-b-vela-coal-light sm:pb-0">
-        {children}
-      </ul>
+    <div className="flex flex-col overflow-x-auto overflow-y-hidden  sm:overflow-x-visible sm:overflow-y-visible">
+      {children}
     </div>
   );
 }

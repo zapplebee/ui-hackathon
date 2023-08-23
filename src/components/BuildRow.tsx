@@ -1,23 +1,22 @@
+import { Menu, Transition } from "@headlessui/react";
 import classNames from "classnames";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Build } from "../api";
 import { StatusIndicator } from "./StatusIndicator";
-
-import { Menu, Transition } from "@headlessui/react";
-import React from "react";
-import { IconGear } from "./icons/IconGear.tsx";
 import { TimeDuration } from "./TimeDuration";
 import { TimeTicker3 } from "./TimeTicker3";
+import { IconGear } from "./icons/IconGear.tsx";
 
 interface BuildRowProps {
   build: Build;
-  showOrg?: boolean;
+  showRepoName?: boolean;
   showActions?: boolean;
 }
 
 export function BuildRow({
   build,
-  showOrg = false,
+  showRepoName = false,
   showActions = true,
 }: BuildRowProps) {
   // well this is a hack, what is going on in here?
@@ -77,11 +76,11 @@ export function BuildRow({
 
           <div className="flex flex-col justify-between gap-4 sm:flex-row">
             <div>
-              {showOrg ? (
+              {showRepoName ? (
                 <>
                   <a
                     // todo: how do we reconstruct this url?
-                    // todo: add rel no ref / no opener w/ target blank
+                    rel="noopener noreferrer"
                     href="#"
                     className="text-vela-cyan underline hover:no-underline"
                   >
@@ -90,8 +89,9 @@ export function BuildRow({
                   :{" "}
                 </>
               ) : null}
-              {build.event} (
+              {build.event?.replace("_", " ")} (
               <a
+                rel="noopener noreferrer"
                 href={build.source}
                 className="text-vela-cyan underline hover:no-underline"
               >
@@ -100,6 +100,7 @@ export function BuildRow({
               ) on{" "}
               <a
                 href="#"
+                rel="noopener noreferrer"
                 className="text-vela-cyan underline hover:no-underline"
               >
                 {build.branch}

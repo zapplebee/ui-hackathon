@@ -1,16 +1,16 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Repo, ReposService, User, UsersService } from "../api";
-import { OrgGroup } from "../components/OrgGroup";
+import { FavoriteStarButton } from "../components/FavoriteStarButton";
 import { Loader } from "../components/Loader";
+import { OrgGroup } from "../components/OrgGroup";
 import { RepoRow } from "../components/RepoRow";
 import { RepoRowGroup } from "../components/RepoRowGroup";
-import { TopBumper } from "../components/TopBumper";
-import { FavoriteStar } from "../components/FavoriteStar";
-import { Helmet } from "react-helmet-async";
-import { mapOrgRepoToString } from "../library/utils";
 import { Searchbar } from "../components/Searchbar";
+import { TopBumper } from "../components/TopBumper";
 import { Toast, ToastCommands } from "../components/toast/Toast";
+import { mapOrgRepoToString } from "../library/utils";
 
 type OverrideGetSourceReposType = Record<string, Repo[]>;
 
@@ -35,11 +35,13 @@ export function SourceRepos() {
   const [filter, setFilter] = useState("");
 
   const filtered = groups
-    .map(([, repos]) => repos)
+    // TODO: __header is a workaround until pagination is fixed
+    .map(([name, repos]) => (name !== "__header" ? repos : null))
+    .filter((a): a is NonNullable<Repo[]> => !!a)
     .flatMap((a) => a)
     .filter((repo) => {
       return mapOrgRepoToString({ org: repo.org!, repo: repo.name! }).includes(
-        filter
+        filter,
       );
     });
 
@@ -96,22 +98,24 @@ export function SourceRepos() {
           {filter === "" ? (
             <div className="flex flex-col gap-8">
               {groups.map(([org, repos]) => {
+                // TODO: __header is a workaround until pagination is fixed
+                if (org === "__headers") {
+                  return null;
+                }
                 return (
-                  <React.Fragment key={org}>
-                    <OrgGroup name={org}>
-                      <RepoRowGroup>
-                        {repos.map((repo) => {
-                          return (
-                            <YourRepoRow
-                              key={`${org}/${repo.name}`}
-                              repo={repo}
-                              currentUser={currentUser.data}
-                            />
-                          );
-                        })}
-                      </RepoRowGroup>
-                    </OrgGroup>
-                  </React.Fragment>
+                  <OrgGroup key={org} name={org}>
+                    <RepoRowGroup>
+                      {repos.map((repo) => {
+                        return (
+                          <YourRepoRow
+                            key={`${org}/${repo.name}`}
+                            repo={repo}
+                            currentUser={currentUser.data}
+                          />
+                        );
+                      })}
+                    </RepoRowGroup>
+                  </OrgGroup>
                 );
               })}
             </div>
@@ -180,8 +184,10 @@ function YourRepoRow({
     favoritedToastRef.current?.publish();
   }
 
+  // TODO: swap this out for the useHandleFavorite hook
   async function handleFavorite(favorites: string[]) {
     await UsersService.updateCurrentUser({ ...currentUser, favorites });
+    queryClient.invalidateQueries({ queryKey: ["current-user"] });
     favoritedToastRef.current?.publish();
   }
 
@@ -192,8 +198,8 @@ function YourRepoRow({
       <div className="flex gap-2">
         {repo.active ? (
           <>
-            <FavoriteStar
-              currentUser={currentUser}
+            <FavoriteStarButton
+              favorites={currentUser.favorites}
               org={repo.org!}
               repo={repo.name!}
               onClick={(updatedFavorites) => {
@@ -227,8 +233,8 @@ function YourRepoRow({
           </>
         ) : (
           <>
-            <FavoriteStar
-              currentUser={currentUser}
+            <FavoriteStarButton
+              favorites={currentUser.favorites}
               org={repo.org!}
               repo={repo.name!}
               onClick={(updatedFavorites) => {

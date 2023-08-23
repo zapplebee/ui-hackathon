@@ -6,12 +6,12 @@ import { Loader } from "../components/Loader";
 import { Pager } from "../components/Pager";
 import { TopBumper } from "../components/TopBumper";
 import { REFETCH_INTERVAL } from "../library/constants";
-import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
+import { useOrgParam } from "../library/hooks/useOrgParam";
 import { usePageParam } from "../library/hooks/usePageParam";
 
 export function OrgBuilds() {
-  const { org } = useOrgRepoParams();
-  const { page } = usePageParam();
+  const org = useOrgParam();
+  const page = usePageParam();
 
   // why don't we reuse the useBuildsQuery hook?
   // because this is a not pulling based on repo
@@ -25,7 +25,7 @@ export function OrgBuilds() {
         undefined,
         undefined,
         page,
-        undefined
+        undefined,
       ),
     refetchInterval: REFETCH_INTERVAL,
   });
@@ -47,7 +47,7 @@ export function OrgBuilds() {
               {builds.data.map((build) => {
                 return (
                   <React.Fragment key={build.id}>
-                    <BuildRow build={build} showOrg={true} />
+                    <BuildRow build={build} showRepoName={true} />
                   </React.Fragment>
                 );
               })}
@@ -71,7 +71,7 @@ function NoBuilds() {
         <ol className="list-inside list-decimal space-y-4 pl-4">
           <li>
             A <code>.vela.yml</code> file that describes your build pipeline in
-            the root of your repository.{" "}
+            the root of one of your repositories.{" "}
             <a href="https://go-vela.github.io/docs/usage/">
               Review the documentation
             </a>{" "}
@@ -83,7 +83,7 @@ function NoBuilds() {
           </li>
           {/* todo: settings link */}
           <li>
-            Trigger one of the <a href="#">configured webhook events</a> by
+            Trigger one of the configured webhook events for a repository by
             performing the respective action via Git.
           </li>
         </ol>

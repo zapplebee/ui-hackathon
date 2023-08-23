@@ -1,10 +1,12 @@
 import { Helmet } from "react-helmet-async";
 import { NavLink, Outlet } from "react-router-dom";
+import { Github } from "../components/Github";
 import { TabsContainer, getTabNavLinkCls } from "../components/tabs";
-import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
+import { TabsList } from "../components/tabs/TabsList";
+import { useOrgParam } from "../library/hooks/useOrgParam";
 
 export function OrgRoot() {
-  const { org } = useOrgRepoParams();
+  const org = useOrgParam();
 
   // todo: what should we do if this happens?
   if (!org) {
@@ -32,24 +34,36 @@ function OrgTabs({ org }: OrgTabProps) {
   return (
     <div data-org-tabs>
       <TabsContainer>
-        <li>
-          <NavLink end className={getTabNavLinkCls()} to={`/${org}`}>
-            Repositories
-          </NavLink>
-        </li>
-        <li>
-          <NavLink className={getTabNavLinkCls()} to={`/${org}/builds`}>
-            Builds
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            className={getTabNavLinkCls()}
-            to={`/${org}/$/secrets/native`}
-          >
-            Secrets
-          </NavLink>
-        </li>
+        <TabsList>
+          <li>
+            <NavLink end className={getTabNavLinkCls()} to={`/${org}`}>
+              Repositories
+            </NavLink>
+          </li>
+          <li>
+            <NavLink className={getTabNavLinkCls()} to={`/${org}/builds`}>
+              Builds
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              className={getTabNavLinkCls()}
+              to={`/${org}/$/secrets/native`}
+            >
+              Secrets
+            </NavLink>
+          </li>
+
+          <li className="flex items-center ml-auto">
+            <a
+              // TODO: how do we get this value?
+              href={"#"}
+              className="w-8 h-8 transition-all hover:scale-110 duration-300"
+            >
+              <Github />
+            </a>
+          </li>
+        </TabsList>
       </TabsContainer>
     </div>
   );

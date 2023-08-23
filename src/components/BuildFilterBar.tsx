@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useEventParam } from "../library/hooks/useEventParam";
-import { RadioButton } from "./formInputs/RadioButton";
 import { Checkbox } from "./formInputs/Checkbox";
+import { RadioButton } from "./formInputs/RadioButton";
 
 export function BuildFilterBar() {
   const [eventFilter, setEventFilter] = useState<string>("all");
 
-  const { event } = useEventParam();
+  const event = useEventParam();
 
   const navigate = useNavigate();
 

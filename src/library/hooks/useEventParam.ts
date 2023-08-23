@@ -5,5 +5,5 @@ export function useEventParam() {
 
   const event = searchParams.get("event");
 
-  return { event };
+  return event;
 }

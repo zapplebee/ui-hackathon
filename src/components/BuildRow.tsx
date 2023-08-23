@@ -92,7 +92,7 @@ export function BuildRow({
               ) : null}
               {build.event} (
               <a
-                href="#"
+                href={build.source}
                 className="text-vela-cyan underline hover:no-underline"
               >
                 {build.commit!.substring(0, 8)}

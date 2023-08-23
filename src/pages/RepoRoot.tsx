@@ -4,7 +4,6 @@ import { Outlet, useMatch } from "react-router";
 import { NavLink } from "react-router-dom";
 import { UsersService } from "../api";
 import { FavoriteStarButton } from "../components/FavoriteStarButton";
-import { Github } from "../components/Github";
 import { TabsContainer, getTabNavLinkCls } from "../components/tabs";
 import { TabsList } from "../components/tabs/TabsList";
 import { useHandleFavorite } from "../library/hooks/useHandleFavorite";
@@ -122,7 +121,9 @@ function RepoRootTabs(props: RepoRootTabsProps) {
                 />
               ) : null}
             </li>
-            <li className="flex items-center">
+
+            {/* todo: import.meta.env.VITE_VELA_SCM isn't used in the frontend ui so there's no way for this button to get linked up yet */}
+            {/* <li className="flex items-center">
               <a
                 // TODO: how do we get this value?
                 href={"#"}
@@ -130,7 +131,7 @@ function RepoRootTabs(props: RepoRootTabsProps) {
               >
                 <Github />
               </a>
-            </li>
+            </li> */}
           </TabsList>
         </TabsContainer>
       </div>

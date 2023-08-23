@@ -1,6 +1,5 @@
 import { Helmet } from "react-helmet-async";
 import { NavLink, Outlet } from "react-router-dom";
-import { Github } from "../components/Github";
 import { TabsContainer, getTabNavLinkCls } from "../components/tabs";
 import { TabsList } from "../components/tabs/TabsList";
 import { useOrgParam } from "../library/hooks/useOrgParam";
@@ -54,7 +53,8 @@ function OrgTabs({ org }: OrgTabProps) {
             </NavLink>
           </li>
 
-          <li className="flex items-center ml-auto">
+          {/* todo: import.meta.env.VITE_VELA_SCM isn't used in the frontend ui so there's no way for this button to get linked up yet */}
+          {/* <li className="flex items-center ml-auto">
             <a
               // TODO: how do we get this value?
               href={"#"}
@@ -62,7 +62,7 @@ function OrgTabs({ org }: OrgTabProps) {
             >
               <Github />
             </a>
-          </li>
+          </li> */}
         </TabsList>
       </TabsContainer>
     </div>

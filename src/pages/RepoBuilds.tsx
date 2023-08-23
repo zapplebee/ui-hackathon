@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { BuildsService } from "../api";
 import { BuildFilterBar } from "../components/BuildFilterBar";
 import { BuildRow } from "../components/BuildRow";
-import { Loader } from "../components/Loader";
 import { Pager2 } from "../components/Pager2";
 import { TopBumper } from "../components/TopBumper";
 import { REFETCH_INTERVAL } from "../library/constants";
@@ -11,15 +11,14 @@ import { useEventParam } from "../library/hooks/useEventParam";
 import { useOrgParam } from "../library/hooks/useOrgParam";
 import { usePageParam } from "../library/hooks/usePageParam";
 import { useRepoParam } from "../library/hooks/useRepoParam";
-import { Link } from "react-router-dom";
 import { getRepoSettingsRoute } from "../library/routes";
 
 export function RepoBuilds() {
   const org = useOrgParam();
   const repo = useRepoParam();
 
-  const { page } = usePageParam();
-  const { event } = useEventParam();
+  const page = usePageParam();
+  const event = useEventParam();
 
   const builds = useQuery({
     queryKey: ["builds", org, repo, page, event],
@@ -44,45 +43,44 @@ export function RepoBuilds() {
     <>
       <TopBumper />
 
-      {builds.isSuccess && builds.data.length === 0 ? (
-        <NoBuilds org={org} repo={repo} />
-      ) : (
+      <div>
         <div>
-          <div>
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <h2 className="text-3xl font-bold">Builds</h2>
-                {builds.isLoading ? <Loader /> : null}
+          {builds.isSuccess && builds.data.length > 0 ? (
+            <div className="mb-4 flex flex-col gap-4">
+              <div>
+                <BuildFilterBar />
+              </div>
+              <div>
+                <Pager2
+                  path={`/${org}/${repo}`}
+                  page={page}
+                  pagination={pagination}
+                />
               </div>
             </div>
-            {builds.isSuccess && builds.data.length > 0 ? (
-              <div className="mb-4 flex flex-col gap-4">
-                <div>
-                  <BuildFilterBar />
-                </div>
-                <div>
-                  <Pager2
-                    path={`/${org}/${repo}`}
-                    page={page}
-                    pagination={pagination}
-                  />
-                </div>
-              </div>
-            ) : null}
+          ) : null}
 
-            <div className="flex flex-col gap-6">
-              {builds.isSuccess && builds.data.length > 0 ? (
-                <>
-                  {builds.data.map((build) => {
-                    return <BuildRow key={build.id} build={build} />;
-                  })}
-                </>
-              ) : null}
-            </div>
+          <div className="flex flex-col gap-6">
+            {builds.isSuccess && builds.data.length > 0 ? (
+              <>
+                {builds.data.map((build) => {
+                  return <BuildRow key={build.id} build={build} />;
+                })}
+              </>
+            ) : null}
           </div>
-          <div className="py-32">&nbsp;</div>
         </div>
-      )}
+
+        {builds.isSuccess && builds.data.length === 0 && event === null ? (
+          <NoBuilds org={org} repo={repo} />
+        ) : null}
+
+        {builds.isSuccess && builds.data.length === 0 && event !== null ? (
+          <NoBuildsFiltered event={event} />
+        ) : null}
+
+        <div className="py-32">&nbsp;</div>
+      </div>
     </>
   );
 }
@@ -125,6 +123,24 @@ function NoBuilds({ org, repo }: NoBuildsProps) {
 
         <p>Happy building!</p>
       </div>
+    </>
+  );
+}
+
+interface NoBuildsFilteredProps {
+  event: string;
+}
+
+function NoBuildsFiltered({ event }: NoBuildsFilteredProps) {
+  return (
+    <>
+      <h3 className="text-3xl font-bold">
+        No builds for <code>{event}</code>
+      </h3>
+      <p>
+        There were no builds for <code>{event}</code> event found. Try another
+        filter.
+      </p>
     </>
   );
 }

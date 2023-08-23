@@ -5,5 +5,5 @@ export function usePageParam() {
 
   const page = parseInt(searchParams.get("page") || "1", 10);
 
-  return { page };
+  return page;
 }

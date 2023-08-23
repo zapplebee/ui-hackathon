@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import { SerializedHeaders } from "../library/headers";
+import { Button } from "./button/Button";
 
 interface PagerProps {
   page: number;
@@ -34,16 +35,20 @@ export function Pager2(props: PagerProps) {
   // react router seem to make it easy
   return (
     <div className="flex justify-end gap-4">
-      {left && (
-        <button className="btn-secondary" onClick={() => handlePage(-1)}>
-          ← newer
-        </button>
-      )}
-      {right && (
-        <button className="btn-secondary" onClick={() => handlePage(1)}>
-          older →
-        </button>
-      )}
+      <Button
+        intent="secondary"
+        onClick={() => handlePage(-1)}
+        disabled={!left}
+      >
+        ← newer
+      </Button>
+      <Button
+        intent="secondary"
+        onClick={() => handlePage(1)}
+        disabled={!right}
+      >
+        older →
+      </Button>
     </div>
   );
 }

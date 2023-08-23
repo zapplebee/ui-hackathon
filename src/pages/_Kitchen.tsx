@@ -4,6 +4,8 @@ import { BuildFilterBar } from "../components/BuildFilterBar";
 import { Details } from "../components/Details";
 import { DetailsPanel } from "../components/DetailsPanel";
 import { ExternalLink } from "../components/ExternalLink";
+import { FavoriteStar } from "../components/FavoriteStar";
+import { FavoriteStarButton } from "../components/FavoriteStarButton";
 import { Loader } from "../components/Loader";
 import { LogsDisplay } from "../components/LogsDisplay";
 import { PageTitle } from "../components/PageTitle";
@@ -144,6 +146,20 @@ export function Kitchen() {
           <h3 className="font-bold">Loading</h3>
 
           <Loader />
+        </div>
+
+        <div className="flex w-1/2 flex-col gap-4">
+          <h3 className="font-bold">Star</h3>
+
+          <FavoriteStar enabled={false} />
+          <FavoriteStar enabled={true} />
+
+          <FavoriteStarButton
+            org="OrgName"
+            repo="RepoName"
+            favorites={["OrgName/RepoName"]}
+          />
+          <FavoriteStarButton org="OrgName" repo="RepoName" favorites={[]} />
         </div>
 
         <div className="flex w-1/2 flex-col gap-4">

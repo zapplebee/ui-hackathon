@@ -14,6 +14,7 @@ import { Outlet } from "react-router";
 import { NavLink } from "react-router-dom";
 import { Button } from "../components/button/Button.tsx";
 import { TabsContainer } from "../components/tabs/TabsContainer.tsx";
+import { TabsList } from "../components/tabs/TabsList.tsx";
 import { getTabNavLinkCls } from "../components/tabs/tabs-utils.ts";
 import { REFETCH_INTERVAL } from "../library/constants";
 import { replaceFavicon } from "../library/favicon.ts";
@@ -169,31 +170,33 @@ export function RepoBuild() {
         ) : null}
 
         <TabsContainer>
-          <li>
-            <NavLink
-              end
-              to={getBuildRoute(org, repo, buildNumber)}
-              className={getTabNavLinkCls()}
-            >
-              Build
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={getBuildServicesRoute(org, repo, buildNumber)}
-              className={getTabNavLinkCls()}
-            >
-              Service
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={getBuildPipelineRoute(org, repo, buildNumber)}
-              className={getTabNavLinkCls()}
-            >
-              Pipeline
-            </NavLink>
-          </li>
+          <TabsList>
+            <li>
+              <NavLink
+                end
+                to={getBuildRoute(org, repo, buildNumber)}
+                className={getTabNavLinkCls()}
+              >
+                Build
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to={getBuildServicesRoute(org, repo, buildNumber)}
+                className={getTabNavLinkCls()}
+              >
+                Service
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to={getBuildPipelineRoute(org, repo, buildNumber)}
+                className={getTabNavLinkCls()}
+              >
+                Pipeline
+              </NavLink>
+            </li>
+          </TabsList>
         </TabsContainer>
 
         <div className="py-2"></div>

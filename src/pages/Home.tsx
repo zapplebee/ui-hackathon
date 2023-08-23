@@ -1,23 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { User, UsersService } from "../api";
-import { OrgGroup } from "../components/OrgGroup";
 import { ComingSoon } from "../components/ComingSoon";
+import { FavoriteStarButton } from "../components/FavoriteStarButton";
 import { LoadingFullscreen } from "../components/LoadingFullscreen";
+import { OrgGroup } from "../components/OrgGroup";
 import { RepoRow } from "../components/RepoRow";
+import { RepoRowGroup } from "../components/RepoRowGroup";
+import { Searchbar } from "../components/Searchbar";
 import { TopBumper } from "../components/TopBumper";
 import { isAuthenticated } from "../library/auth";
+import { useHandleFavorite } from "../library/hooks/useHandleFavorite";
+import { getRepoSecretsRoute, getSourceReposRoute } from "../library/routes";
 import {
   mapOrgRepoStringsToObjects,
   mapOrgRepoToString,
   mapToTree,
 } from "../library/utils";
-import { RepoRowGroup } from "../components/RepoRowGroup";
-import { FavoriteStar } from "../components/FavoriteStar";
-import { Helmet } from "react-helmet-async";
-import { getRepoSecretsRoute, getSourceReposRoute } from "../library/routes";
-import { Searchbar } from "../components/Searchbar";
 
 export function Home() {
   const authenticated = isAuthenticated();
@@ -97,6 +98,8 @@ function HomeWithFavorites(props: HomeWithFavoritesProps) {
   const orgRepos = mapOrgRepoStringsToObjects(props.user.favorites);
   const tree = mapToTree(orgRepos);
 
+  const handleFavorite = useHandleFavorite();
+
   const groups = Object.entries(tree).sort((a, b) => a[0].localeCompare(b[0]));
 
   const [filter, setFilter] = useState("");
@@ -165,12 +168,12 @@ function HomeWithFavorites(props: HomeWithFavoritesProps) {
                             repo={repo.repo}
                           >
                             <div className="flex flex-col items-stretch gap-2 sm:flex-row">
-                              <FavoriteStar
-                                currentUser={props.user}
+                              <FavoriteStarButton
+                                favorites={props.user.favorites}
                                 org={repo.org!}
                                 repo={repo.repo!}
-                                onClick={() => {
-                                  console.info("todo");
+                                onClick={(favorites) => {
+                                  handleFavorite(props.user, favorites);
                                 }}
                               />
                               <Link
@@ -221,12 +224,12 @@ function HomeWithFavorites(props: HomeWithFavoritesProps) {
                 repo={orgRepo.repo}
               >
                 <div className="flex flex-col items-stretch gap-2 sm:flex-row">
-                  <FavoriteStar
-                    currentUser={props.user}
+                  <FavoriteStarButton
+                    favorites={props.user.favorites}
                     org={orgRepo.org!}
                     repo={orgRepo.repo!}
-                    onClick={() => {
-                      console.info("todo");
+                    onClick={(favorites) => {
+                      handleFavorite(props.user, favorites);
                     }}
                   />
                   <Link
@@ -269,7 +272,7 @@ function HomeWithNoFavorites() {
     <>
       <div className="flex flex-col gap-4 rounded border border-dashed border-vela-coal-light p-4">
         <p>
-          You do not have any favorited repositories. Visit{" "}
+          You do not have any favorite repositories. Visit{" "}
           <Link to="/account/source-repos">Source Repositories</Link> to add
           repositories to your favorites.
         </p>

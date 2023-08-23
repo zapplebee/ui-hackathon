@@ -1,24 +1,23 @@
+import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { Outlet, useMatch } from "react-router";
 import { NavLink } from "react-router-dom";
-import { useOrgRepoParams } from "../library/hooks/useOrgRepoParams";
+import { UsersService } from "../api";
+import { FavoriteStarButton } from "../components/FavoriteStarButton";
+import { Github } from "../components/Github";
 import { TabsContainer, getTabNavLinkCls } from "../components/tabs";
+import { TabsList } from "../components/tabs/TabsList";
+import { useHandleFavorite } from "../library/hooks/useHandleFavorite";
+import { useOrgParam } from "../library/hooks/useOrgParam";
+import { useRepoParam } from "../library/hooks/useRepoParam";
 
 export function RepoRoot() {
-  const { org, repo } = useOrgRepoParams();
+  const org = useOrgParam();
+  const repo = useRepoParam();
 
   // react router allows wildcards `*`
   // so we can use that to determine if we're on a build route
   const isBuildRoute = useMatch("/:org/:repo/:number/*");
-
-  // todo: what should we do if this happens?
-  if (!org) {
-    return null;
-  }
-
-  if (!repo) {
-    return null;
-  }
 
   /**
    * isBuild should only be true when showing the /:org/:repo/:number route
@@ -35,7 +34,7 @@ export function RepoRoot() {
       <Helmet>
         <title>{`${org}/${repo} - Vela`}</title>
       </Helmet>
-      <Tabs org={org} repo={repo} isBuild={isBuild} />
+      <RepoRootTabs org={org} repo={repo} isBuild={isBuild} />
       <div>
         <Outlet />
       </div>
@@ -43,64 +42,96 @@ export function RepoRoot() {
   );
 }
 
-interface TabProps {
+interface RepoRootTabsProps {
   org: string;
   repo: string;
   isBuild?: boolean;
 }
 
-function Tabs(props: TabProps) {
+function RepoRootTabs(props: RepoRootTabsProps) {
   const { isBuild = false } = props;
+  const handleFavorite = useHandleFavorite();
+
+  const currentUser = useQuery({
+    queryKey: ["current-user"],
+    queryFn: UsersService.getCurrentUser,
+  });
 
   return (
     <>
       <div data-repo-tabs>
         <TabsContainer>
-          <li>
-            <NavLink
-              end
-              className={getTabNavLinkCls((isActive) => {
-                const active = isActive || isBuild;
-                return active;
-              })}
-              to={`/${props.org}/${props.repo}`}
-            >
-              Builds
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              className={getTabNavLinkCls()}
-              to={`/${props.org}/${props.repo}/deployments`}
-            >
-              Deployments
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              className={getTabNavLinkCls()}
-              // todo: where does this native property come from?
-              to={`/${props.org}/${props.repo}/$/secrets/native`}
-            >
-              Secrets
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              className={getTabNavLinkCls()}
-              to={`/${props.org}/${props.repo}/audit`}
-            >
-              Audit
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              className={getTabNavLinkCls()}
-              to={`/${props.org}/${props.repo}/settings`}
-            >
-              Settings
-            </NavLink>
-          </li>
+          <TabsList>
+            <li>
+              <NavLink
+                end
+                className={getTabNavLinkCls((isActive) => {
+                  const active = isActive || isBuild;
+                  return active;
+                })}
+                to={`/${props.org}/${props.repo}`}
+              >
+                Builds
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                className={getTabNavLinkCls()}
+                to={`/${props.org}/${props.repo}/deployments`}
+              >
+                Deployments
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                className={getTabNavLinkCls()}
+                // todo: where does this native property come from?
+                to={`/${props.org}/${props.repo}/$/secrets/native`}
+              >
+                Secrets
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                className={getTabNavLinkCls()}
+                to={`/${props.org}/${props.repo}/audit`}
+              >
+                Audit
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                className={getTabNavLinkCls()}
+                to={`/${props.org}/${props.repo}/settings`}
+              >
+                Settings
+              </NavLink>
+            </li>
+
+            {/*  */}
+
+            <li className="flex items-center ml-auto">
+              {currentUser ? (
+                <FavoriteStarButton
+                  org={props.org}
+                  repo={props.repo}
+                  favorites={currentUser.data?.favorites ?? []}
+                  onClick={(favorites) =>
+                    handleFavorite(currentUser.data, favorites)
+                  }
+                />
+              ) : null}
+            </li>
+            <li className="flex items-center">
+              <a
+                // TODO: how do we get this value?
+                href={"#"}
+                className="w-8 h-8 transition-all hover:scale-110 duration-300"
+              >
+                <Github />
+              </a>
+            </li>
+          </TabsList>
         </TabsContainer>
       </div>
     </>

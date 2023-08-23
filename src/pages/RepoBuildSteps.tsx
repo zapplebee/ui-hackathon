@@ -289,9 +289,9 @@ function StepRow({ step, org, repo, build }: StepRowProps) {
               <div className="border-b border-vela-coal-light">
                 <DetailsPanel>
                   <div className="flex justify-end ">
-                    <a href="#" className="text-sm">
+                    <button className="text-sm text-vela-cyan hover:underline">
                       download step logs
-                    </a>
+                    </button>
                   </div>
                 </DetailsPanel>
               </div>
